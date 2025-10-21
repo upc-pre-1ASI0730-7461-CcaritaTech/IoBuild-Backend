@@ -1,0 +1,6 @@
+@IoBuilt.API_HostAddress = http://localhost:5268
+
+GET {{IoBuilt.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
