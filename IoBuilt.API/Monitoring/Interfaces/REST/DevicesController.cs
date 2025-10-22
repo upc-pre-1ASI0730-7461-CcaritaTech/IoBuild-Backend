@@ -1,4 +1,5 @@
 using System.Net.Mime;
+using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using IoBuilt.API.Monitoring.Domain.Model.Queries;
 using IoBuilt.API.Monitoring.Domain.Services;
 using IoBuilt.API.Monitoring.Interfaces.REST.Resources;
@@ -8,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace IoBuilt.API.Monitoring.Interfaces.REST;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]

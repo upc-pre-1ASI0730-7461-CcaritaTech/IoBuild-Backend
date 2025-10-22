@@ -1,6 +1,7 @@
 using System.Net.Mime;
 using IoBuilt.API.IAM.Domain.Model.Queries;
 using IoBuilt.API.IAM.Domain.Services;
+using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using IoBuilt.API.IAM.Interfaces.REST.Resources;
 using IoBuilt.API.IAM.Interfaces.REST.Transform;
 using IoBuilt.API.Profiles.Interfaces.ACL;
@@ -10,6 +11,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace IoBuilt.API.IAM.Interfaces.REST;
 
+[Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
@@ -42,7 +44,7 @@ public class UsersController(
         return Ok(userResources);
     }
 
-    [HttpGet("{userId:int}/profile")]
+    [HttpGet("{userId:int}/profiles")]
     [SwaggerOperation("Get Profile by User Id", "Get the profile associated with a user by its unique identifier.", OperationId = "GetProfileByUserId")]
     [SwaggerResponse(200, "The profile was found and returned.", typeof(ProfileResource))]
     [SwaggerResponse(404, "The profile was not found.")]
