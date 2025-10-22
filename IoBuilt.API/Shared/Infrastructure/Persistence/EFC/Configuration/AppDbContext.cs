@@ -1,4 +1,8 @@
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,8 +24,18 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
         base.OnModelCreating(builder);
         
-        // Publishing Context
-        //builder.ApplyPublishingConfiguration();
+        // IAM Context
+        builder.ApplyIamConfiguration();
+        
+        // Profiles Context
+        builder.ApplyProfilesConfiguration();
+        
+        
+        // Projects Context
+        builder.ApplyProjectsConfiguration();
+        
+        // Monitoring Context
+        builder.ApplyMonitoringConfiguration();
         
         builder.UseSnakeCaseNamingConvention();
     }
