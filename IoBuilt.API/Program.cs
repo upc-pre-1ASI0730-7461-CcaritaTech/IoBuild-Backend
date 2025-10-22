@@ -3,6 +3,7 @@ using IoBuilt.API.Shared.Infrastructure.Interfaces.ASP.Configuration;
 using IoBuilt.API.Shared.Infrastructure.Mediator.Cortex.Configuration;
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Repositories;
+using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Extensions;
 using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
@@ -94,6 +95,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 // IAM Bounded Context
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Repositories.IUserRepository, IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Services.IUserQueryService, IoBuilt.API.IAM.Application.Internal.QueryServices.UserQueryService>();
+builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Services.IUserCommandService, IoBuilt.API.IAM.Application.Internal.CommandServices.UserCommandService>();
+builder.Services.AddScoped<IoBuilt.API.IAM.Application.Internal.OutboundServices.ITokenService, IoBuilt.API.IAM.Infrastructure.Tokens.JWT.Services.TokenService>();
+builder.Services.AddScoped<IoBuilt.API.IAM.Application.Internal.OutboundServices.IHashingService, IoBuilt.API.IAM.Infrastructure.Hashing.BCrypt.Services.HashingService>();
 
 // Profiles Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Profiles.Domain.Repositories.IProfileRepository, IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Repositories.ProfileRepository>();
@@ -113,7 +117,7 @@ builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Services.IDeviceQuerySe
 // IAM Bounded Context
 
 // TokenSettings Configuration
-//builder.Services.Configure<TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+builder.Services.Configure<IoBuilt.API.IAM.Infrastructure.Tokens.JWT.Configuration.TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
 // Dependency Injection for IAM Bounded Context
 
 
@@ -152,7 +156,7 @@ if (app.Environment.IsDevelopment())
 app.UseCors("AllowAllPolicy");
 
 // Add Authorization Middleware to Pipeline
-//app.UseRequestAuthorization();
+app.UseRequestAuthorization();
 
 app.UseHttpsRedirection();
 
