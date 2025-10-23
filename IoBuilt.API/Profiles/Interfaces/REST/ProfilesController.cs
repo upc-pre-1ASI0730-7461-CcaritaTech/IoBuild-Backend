@@ -14,8 +14,23 @@ namespace IoBuilt.API.Profiles.Interfaces.REST;
 [Route("api/v1/[controller]")]
 [Produces(MediaTypeNames.Application.Json)]
 [SwaggerTag("Available Profile Endpoints.")]
-public class ProfilesController(IProfileQueryService profileQueryService) : ControllerBase
+public class ProfilesController(
+    IProfileCommandService profileCommandService,
+    IProfileQueryService profileQueryService) : ControllerBase
 {
+    [HttpPost]
+    [SwaggerOperation("Create Profile", "Create a new profile.", OperationId = "CreateProfile")]
+    [SwaggerResponse(201, "The profile was created successfully.", typeof(ProfileResource))]
+    [SwaggerResponse(400, "The profile could not be created.")]
+    public async Task<IActionResult> CreateProfile([FromBody] CreateProfileResource resource)
+    {
+        var createProfileCommand = CreateProfileCommandFromResourceAssembler.ToCommandFromResource(resource);
+        var profile = await profileCommandService.Handle(createProfileCommand);
+        if (profile is null) return BadRequest();
+        var profileResource = ProfileResourceFromEntityAssembler.ToResourceFromEntity(profile);
+        return CreatedAtAction(nameof(GetProfileById), new { profileId = profile.Id }, profileResource);
+    }
+
     [HttpGet("{profileId:int}")]
     [SwaggerOperation("Get Profile by Id", "Get a profile by its unique identifier.", OperationId = "GetProfileById")]
     [SwaggerResponse(200, "The profile was found and returned.", typeof(ProfileResource))]
