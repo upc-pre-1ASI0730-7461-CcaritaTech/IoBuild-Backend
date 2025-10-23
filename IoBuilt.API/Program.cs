@@ -102,6 +102,7 @@ builder.Services.AddScoped<IoBuilt.API.IAM.Application.Internal.OutboundServices
 // Profiles Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Profiles.Domain.Repositories.IProfileRepository, IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Repositories.ProfileRepository>();
 builder.Services.AddScoped<IoBuilt.API.Profiles.Domain.Services.IProfileQueryService, IoBuilt.API.Profiles.Application.Internal.QueryServices.ProfileQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Profiles.Domain.Services.IProfileCommandService, IoBuilt.API.Profiles.Application.Internal.CommandServices.ProfileCommandService>();
 builder.Services.AddScoped<IoBuilt.API.Profiles.Interfaces.ACL.IProfilesContextFacade, IoBuilt.API.Profiles.Application.ACL.ProfilesContextFacade>();
 
 
