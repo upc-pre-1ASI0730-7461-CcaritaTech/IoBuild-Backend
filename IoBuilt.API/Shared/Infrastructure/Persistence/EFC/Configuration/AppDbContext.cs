@@ -37,6 +37,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         // Monitoring Context
         builder.ApplyMonitoringConfiguration();
         
+        // Apply Seed Data
+        builder.ApplySeedData();
+        
         builder.UseSnakeCaseNamingConvention();
     }
 }
