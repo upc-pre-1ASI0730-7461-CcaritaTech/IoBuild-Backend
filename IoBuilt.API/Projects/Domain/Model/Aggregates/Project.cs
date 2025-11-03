@@ -1,3 +1,5 @@
+using IoBuilt.API.Projects.Domain.Model.Commands;
+
 namespace IoBuilt.API.Projects.Domain.Model.Aggregates;
 
 /// <summary>
@@ -36,5 +38,18 @@ public partial class Project
         BuilderId = builderId;
         CreatedDate = createdDate;
         ImageUrl = imageUrl;
+    }
+
+    public Project(CreateProjectCommand command)
+    {
+        Name = command.Name;
+        Description = command.Description;
+        Location = command.Location;
+        TotalUnits = command.TotalUnits;
+        OccupiedUnits = command.OccupiedUnits;
+        Status = command.Status;
+        BuilderId = command.BuilderId;
+        CreatedDate = command.CreatedDate;
+        ImageUrl = command.ImageUrl;
     }
 }
