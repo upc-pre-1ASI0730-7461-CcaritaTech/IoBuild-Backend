@@ -1,10 +1,13 @@
-using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
-using IoBuilt.API.Shared.Domain.Repositories;
+using IoBuilt.API.Devices.Domain.Model.Aggregates;
 
 namespace IoBuilt.API.Devices.Domain.Repositories;
 
-public interface IDevicesRepository : IBaseRepository<Device>
+public interface IDeviceRepository
 {
-    Task<IEnumerable<Device>> FindByOwnerIdAsync(int ownerId);
-    Task<IEnumerable<Device>> FindByStatusAsync(string status);
+    Task<IEnumerable<Device>> ListAsync();
+    Task<Device?> FindByIdAsync(int id);
+    Task AddAsync(Device device);
+    void Update(Device device);
+    void Remove(Device device);
+    Task SaveChangesAsync();
 }

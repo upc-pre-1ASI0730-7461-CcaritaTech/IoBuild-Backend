@@ -1,6 +1,7 @@
 namespace IoBuilt.API.Devices.Domain.Model.Commands;
 
-public record CreateDeviceCommand(
+public record UpdateDeviceCommand(
+    int Id,
     string Name,
     string Type,
     string Location,

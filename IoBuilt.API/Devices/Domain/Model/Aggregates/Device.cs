@@ -1,35 +1,33 @@
-using IoBuilt.API.Devices.Domain.Model.Commands;
-
 namespace IoBuilt.API.Devices.Domain.Model.Aggregates;
 
-public partial class Device
+public class Device
 {
-    public string Name { get; private set; }
-    public string Type { get; private set; }
-    public string Location { get; private set; }
-    public string Status { get; private set; }
+    public int Id { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Type { get; private set; } = string.Empty;
+    public string Location { get; private set; } = string.Empty;
+    public int ProjectId { get; private set; }
+    public string Status { get; private set; } = string.Empty;
 
-    public Device()
+    public Device(string name, string type, string location, int projectId, string status)
     {
-        Name = string.Empty;
-        Type = string.Empty;
-        Location = string.Empty;
-        Status = string.Empty;
+        Name = name;
+        Type = type;
+        Location = location;
+        ProjectId = projectId;
+        Status = status;
     }
 
-    public Device(string name, string type, string location, string status)
+    public Device(string commandName, string commandType, string commandLocation, string commandStatus)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Update(string name, string type, string location, string status)
     {
         Name = name;
         Type = type;
         Location = location;
         Status = status;
-    }
-
-    public Device(CreateDeviceCommand command)
-    {
-        Name = command.Name;
-        Type = command.Type;
-        Location = command.Location;
-        Status = command.Status;
     }
 }
