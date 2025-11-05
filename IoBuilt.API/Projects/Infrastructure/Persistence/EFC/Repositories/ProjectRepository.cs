@@ -17,4 +17,9 @@ public class ProjectRepository(AppDbContext context) : BaseRepository<Project>(c
     {
         return await Context.Set<Project>().Where(p => p.Status == status).ToListAsync();
     }
+    
+    public async Task<Project?> FindByNameAsync(string name)
+    {
+        return await Context.Set<Project>().Where(p => p.Name == name).FirstOrDefaultAsync();
+    }
 }

@@ -7,4 +7,5 @@ public interface IProjectRepository : IBaseRepository<Project>
 {
     Task<IEnumerable<Project>> FindByBuilderIdAsync(int builderId);
     Task<IEnumerable<Project>> FindByStatusAsync(string status);
+    Task<Project?> FindByNameAsync(string name);
 }
