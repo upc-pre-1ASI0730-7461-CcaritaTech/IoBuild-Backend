@@ -2,7 +2,7 @@ using IoBuilt.API.Devices.Domain.Model.Aggregates;
 using IoBuilt.API.Devices.Domain.Model.Queries;
 using IoBuilt.API.Devices.Domain.Repositories;
 using IoBuilt.API.Devices.Domain.Services;
-using IoBuilt.API.Monitoring.Domain.Repositories;
+//using IoBuilt.API.Monitoring.Domain.Repositories;
 using IDeviceRepository = IoBuilt.API.Devices.Domain.Repositories.IDeviceRepository;
 
 namespace IoBuilt.API.Devices.Application.Internal.QueryServices;
