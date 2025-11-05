@@ -2,18 +2,23 @@ using IoBuilt.API.Devices.Domain.Model.Aggregates;
 using IoBuilt.API.Devices.Domain.Model.Queries;
 using IoBuilt.API.Devices.Domain.Repositories;
 using IoBuilt.API.Devices.Domain.Services;
+using IoBuilt.API.Monitoring.Domain.Repositories;
+using IDeviceRepository = IoBuilt.API.Devices.Domain.Repositories.IDeviceRepository;
 
 namespace IoBuilt.API.Devices.Application.Internal.QueryServices;
 
-public class DeviceQueryService(IDevicesRepository deviceRepository) : IDeviceQueryService
+public class DeviceQueryService : IDeviceQueryService
 {
-    public async Task<IEnumerable<Device>> Handle(GetAllDevicesQuery query)
+    private readonly IDeviceRepository _repository;
+
+    public DeviceQueryService(IDeviceRepository repository)
     {
-        return await deviceRepository.ListAsync();
+        _repository = repository;
     }
 
-    public Task<Device?> Handle(GetDeviceByIdQuery query)
-    {
-        return await deviceRepository.FindByIdAsync(query.DeviceId)
-    }
+    public async Task<IEnumerable<Device>> Handle(GetAllDevicesQuery query)
+        => await _repository.ListAsync();
+
+    public async Task<Device?> Handle(GetDeviceByIdQuery query)
+        => await _repository.FindByIdAsync(query.Id);
 }

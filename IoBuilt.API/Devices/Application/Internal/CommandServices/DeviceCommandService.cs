@@ -2,31 +2,40 @@ using IoBuilt.API.Devices.Domain.Model.Aggregates;
 using IoBuilt.API.Devices.Domain.Model.Commands;
 using IoBuilt.API.Devices.Domain.Repositories;
 using IoBuilt.API.Devices.Domain.Services;
-using IoBuilt.API.Shared.Domain.Repositories;
+using IoBuilt.API.Monitoring.Domain.Repositories;
+using IDeviceRepository = IoBuilt.API.Devices.Domain.Repositories.IDeviceRepository;
 
 namespace IoBuilt.API.Devices.Application.Internal.CommandServices;
 
-public class DeviceCommandService(
-    IDevicesRepository deviceRepository,
-    IUnitOfWork unitOfWork) : IDeviceCommandService
+public class DeviceCommandService : IDeviceCommandService
 {
-    public async Task<Device?> Handle(CreateDeviceCommand command)
+    private readonly IDeviceRepository _repository;
+
+    public DeviceCommandService(IDeviceRepository repository)
     {
-        var device = await deviceRepository.FindByIdAsync(command.Id);
-        if (device is not null) throw new Exception("Device already exists.");
+        _repository = repository;
+    }
 
-        device = new Device(command);
-        try
-        {
-            await deviceRepository.AddAsync(device);
-            await unitOfWork.CompleteAsync();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return null;
-        }
+    public async Task<int> Handle(CreateDeviceCommand command)
+    {
+        var device = new Device(command.Name, command.Type, command.Location, command.Status);
+        await _repository.AddAsync(device);
+        await _repository.SaveChangesAsync();
+        return device.Id;
+    }
 
-        return device;
+    public async Task Handle(UpdateDeviceCommand command)
+    {
+        var device = await _repository.FindByIdAsync(command.Id) ?? throw new Exception("Device not found");
+        device.Update(command.Name, command.Type, command.Location, command.Status);
+        _repository.Update(device);
+        await _repository.SaveChangesAsync();
+    }
+
+    public async Task Handle(DeleteDeviceCommand command)
+    {
+        var device = await _repository.FindByIdAsync(command.Id) ?? throw new Exception("Device not found");
+        _repository.Remove(device);
+        await _repository.SaveChangesAsync();
     }
 }
