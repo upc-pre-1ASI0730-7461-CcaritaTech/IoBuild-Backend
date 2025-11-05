@@ -1,4 +1,4 @@
-using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
+/*using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
 using IoBuilt.API.Monitoring.Domain.Model.Queries;
 using IoBuilt.API.Monitoring.Domain.Repositories;
 using IoBuilt.API.Monitoring.Domain.Services;
@@ -16,4 +16,4 @@ public class DeviceQueryService(IDeviceRepository deviceRepository) : IDeviceQue
     {
         return await deviceRepository.FindByIdAsync(query.DeviceId);
     }
-}
+}*/
