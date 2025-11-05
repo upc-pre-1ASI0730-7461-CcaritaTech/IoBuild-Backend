@@ -1,4 +1,4 @@
-using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
+/*using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
 using IoBuilt.API.Monitoring.Interfaces.REST.Resources;
 
 namespace IoBuilt.API.Monitoring.Interfaces.REST.Transform;
@@ -15,4 +15,4 @@ public static class DeviceResourceFromEntityAssembler
             entity.ProjectId,
             entity.Status);
     }
-}
+}*/

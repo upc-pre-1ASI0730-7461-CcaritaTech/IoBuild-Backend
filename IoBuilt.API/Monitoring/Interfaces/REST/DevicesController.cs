@@ -1,4 +1,4 @@
-using System.Net.Mime;
+/*using System.Net.Mime;
 using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using IoBuilt.API.Monitoring.Domain.Model.Queries;
 using IoBuilt.API.Monitoring.Domain.Services;
@@ -39,4 +39,4 @@ public class DevicesController(IDeviceQueryService deviceQueryService) : Control
         var deviceResources = devices.Select(DeviceResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(deviceResources);
     }
-}
+}*/
