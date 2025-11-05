@@ -1,4 +1,4 @@
-using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
+/*using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 
 namespace IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
@@ -18,3 +18,4 @@ public static class ModelBuilderExtensions
         builder.Entity<Device>().Property(d => d.Status).IsRequired().HasMaxLength(50);
     }
 }
+*/
