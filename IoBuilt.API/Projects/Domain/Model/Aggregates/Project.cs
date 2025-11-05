@@ -49,7 +49,7 @@ public partial class Project
         OccupiedUnits = command.OccupiedUnits;
         Status = command.Status;
         BuilderId = command.BuilderId;
-        CreatedDate = command.CreatedDate;
+        CreatedDate = new DateTime();
         ImageUrl = command.ImageUrl;
     }
 }
