@@ -12,7 +12,7 @@ public class ProjectCommandService(
 {
     public async Task<Project?> Handle(CreateProjectCommand command)
     {
-        var project = await projectRepository.FindByIdAsync(command.Id);
+        var project = await projectRepository.FindByNameAsync(command.Name);
         if (project is not null) throw new Exception("Project already exists.");
 
         project = new Project(command);
