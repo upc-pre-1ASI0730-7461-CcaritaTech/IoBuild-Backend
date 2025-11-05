@@ -92,6 +92,11 @@ builder.Services.AddSwaggerGen(options =>
 // Shared Bounded Context
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+// Projects Bounded Context
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IProjectCommandService, IoBuilt.API.Projects.Application.Internal.CommandServices.ProjectCommandService>();
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IProjectRepository, IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Repositories.ProjectRepository>();
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IProjectQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.ProjectQueryService>();
+
 // IAM Bounded Context
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Repositories.IUserRepository, IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Services.IUserQueryService, IoBuilt.API.IAM.Application.Internal.QueryServices.UserQueryService>();
@@ -106,9 +111,6 @@ builder.Services.AddScoped<IoBuilt.API.Profiles.Domain.Services.IProfileCommandS
 builder.Services.AddScoped<IoBuilt.API.Profiles.Interfaces.ACL.IProfilesContextFacade, IoBuilt.API.Profiles.Application.ACL.ProfilesContextFacade>();
 
 
-// Projects Bounded Context
-builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IProjectRepository, IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Repositories.ProjectRepository>();
-builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IProjectQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.ProjectQueryService>();
 
 // Monitoring Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Repositories.IDeviceRepository, IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Repositories.DeviceRepository>();
