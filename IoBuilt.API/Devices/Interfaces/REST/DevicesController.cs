@@ -1,0 +1,60 @@
+using IoBuilt.API.Devices.Application.Internal.CommandServices;
+using IoBuilt.API.Devices.Application.Internal.QueryServices;
+using IoBuilt.API.Devices.Domain.Model.Commands;
+using IoBuilt.API.Devices.Domain.Model.Queries;
+using IoBuilt.API.Devices.Interfaces.REST.Resources;
+using IoBuilt.API.Devices.Interfaces.REST.Transform;
+using Microsoft.AspNetCore.Mvc;
+
+namespace IoBuilt.API.Devices.Interfaces.REST;
+
+[ApiController]
+[Route("api/v1/[controller]")]
+public class DevicesController : ControllerBase
+{
+    private readonly DeviceCommandService _commandService;
+    private readonly DeviceQueryService _queryService;
+
+    public DevicesController(DeviceCommandService commandService, DeviceQueryService queryService)
+    {
+        _commandService = commandService;
+        _queryService = queryService;
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<DeviceResource>> GetAll()
+    {
+        var devices = await _queryService.Handle(new GetAllDevicesQuery());
+        return devices.Select(DeviceResourceFromEntityAssembler.ToResource);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<DeviceResource?> GetById(int id)
+    {
+        var device = await _queryService.Handle(new GetDeviceByIdQuery(id));
+        return device is null ? null : DeviceResourceFromEntityAssembler.ToResource(device);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateDeviceResource resource)
+    {
+        var command = DeviceResourceToCommandAssembler.ToCommand(resource);
+        var id = await _commandService.Handle(command);
+        return Created($"api/v1/devices/{id}", new { Id = id });
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, [FromBody] UpdateDeviceResource resource)
+    {
+        var command = DeviceResourceToCommandAssembler.ToCommand(id, resource);
+        await _commandService.Handle(command);
+        return Ok();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        await _commandService.Handle(new DeleteDeviceCommand(id));
+        return NoContent();
+    }
+}
