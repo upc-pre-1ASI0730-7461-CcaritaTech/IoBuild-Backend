@@ -2,7 +2,7 @@ using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions
 using IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensions;
-using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
+//using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +35,7 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         builder.ApplyProjectsConfiguration();
         
         // Monitoring Context
-        builder.ApplyMonitoringConfiguration();
+        //builder.ApplyMonitoringConfiguration();
         
         // Apply Seed Data
         builder.ApplySeedData();
