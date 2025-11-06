@@ -6,6 +6,11 @@ using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Repositories;
 using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Extensions;
 using Cortex.Mediator.Commands;
 using Cortex.Mediator.DependencyInjection;
+using IoBuilt.API.Devices.Application.Internal.CommandServices;
+using IoBuilt.API.Devices.Application.Internal.QueryServices;
+using IoBuilt.API.Devices.Domain.Repositories;
+using IoBuilt.API.Devices.Domain.Services;
+using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -113,9 +118,14 @@ builder.Services.AddScoped<IoBuilt.API.Profiles.Interfaces.ACL.IProfilesContextF
 
 
 // Monitoring Bounded Context
-builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Repositories.IDeviceRepository, IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Repositories.DeviceRepository>();
-builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Services.IDeviceQueryService, IoBuilt.API.Monitoring.Application.Internal.QueryServices.DeviceQueryService>();
+//builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Repositories.IDeviceRepository, IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Repositories.DeviceRepository>();
+//builder.Services.AddScoped<IoBuilt.API.Monitoring.Domain.Services.IDeviceQueryService, IoBuilt.API.Monitoring.Application.Internal.QueryServices.DeviceQueryService>();
 
+//Devices Bounded Context
+// Devices Bounded Context
+builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
+builder.Services.AddScoped<IDeviceCommandService, DeviceCommandService>();
+builder.Services.AddScoped<IDeviceQueryService, DeviceQueryService>();
 
 // IAM Bounded Context
 

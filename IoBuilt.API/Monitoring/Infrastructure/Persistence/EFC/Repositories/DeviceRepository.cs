@@ -1,4 +1,4 @@
-using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
+/*using IoBuilt.API.Monitoring.Domain.Model.Aggregates;
 using IoBuilt.API.Monitoring.Domain.Repositories;
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration;
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Repositories;
@@ -22,4 +22,4 @@ public class DeviceRepository(AppDbContext context) : BaseRepository<Device>(con
     {
         return await Context.Set<Device>().Where(d => d.Type == type).ToListAsync();
     }
-}
+}*/

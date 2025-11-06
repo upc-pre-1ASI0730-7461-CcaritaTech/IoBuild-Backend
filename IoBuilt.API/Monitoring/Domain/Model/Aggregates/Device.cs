@@ -1,4 +1,4 @@
-namespace IoBuilt.API.Monitoring.Domain.Model.Aggregates;
+/*namespace IoBuilt.API.Monitoring.Domain.Model.Aggregates;
 
 /// <summary>
 /// Device Aggregate Root
@@ -28,4 +28,4 @@ public partial class Device
         ProjectId = projectId;
         Status = status;
     }
-}
+}*/
