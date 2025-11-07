@@ -52,4 +52,17 @@ public partial class Project
         CreatedDate = new DateTime();
         ImageUrl = command.ImageUrl;
     }
+
+    public Project Update(UpdateProjectCommand command)
+    {
+        Name = command.Name;
+        Description = command.Description;
+        Location = command.Location;
+        TotalUnits = command.TotalUnits;
+        OccupiedUnits = command.OccupiedUnits;
+        Status = command.Status;
+        BuilderId = command.BuilderId;
+        ImageUrl = command.ImageUrl;
+        return this;
+    }
 }

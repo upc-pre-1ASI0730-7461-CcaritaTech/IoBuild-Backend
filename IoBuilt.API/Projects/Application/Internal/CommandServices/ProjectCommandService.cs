@@ -29,4 +29,47 @@ public class ProjectCommandService(
         
         return project;
     }
+
+    public async Task<Project?> Handle(UpdateProjectCommand command)
+    {
+        var project = await projectRepository.FindByIdAsync(command.Id);
+        if (project is null) throw new Exception("Project not found.");
+
+        // Check if another project with the same name exists (excluding current project)
+        var existingProject = await projectRepository.FindByNameAsync(command.Name);
+        if (existingProject is not null && existingProject.Id != command.Id) 
+            throw new Exception("A project with the same name already exists.");
+
+        project.Update(command);
+        try
+        {
+            projectRepository.Update(project);
+            await unitOfWork.CompleteAsync();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return null;
+        }
+        
+        return project;
+    }
+
+    public async Task<bool> Handle(DeleteProjectCommand command)
+    {
+        var project = await projectRepository.FindByIdAsync(command.Id);
+        if (project is null) throw new Exception("Project not found.");
+
+        try
+        {
+            projectRepository.Remove(project);
+            await unitOfWork.CompleteAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return false;
+        }
+    }
 }

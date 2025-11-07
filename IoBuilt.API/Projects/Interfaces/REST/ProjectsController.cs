@@ -1,6 +1,5 @@
 using System.Net.Mime;
 using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
-using IoBuilt.API.Projects.Application.Internal.CommandServices;
 using IoBuilt.API.Projects.Domain.Model.Commands;
 using IoBuilt.API.Projects.Domain.Model.Queries;
 using IoBuilt.API.Projects.Domain.Services;
@@ -53,5 +52,50 @@ public class ProjectsController(IProjectQueryService projectQueryService, IProje
         if (result is null) return BadRequest();
         var projectResource = ProjectResourceFromEntityAssembler.ToResourceFromEntity(result);
         return CreatedAtAction(nameof(GetProjectById), new { projectId = projectResource.Id }, projectResource);
+    }
+
+    [HttpPut("{projectId:int}")]
+    [SwaggerOperation("Update Project", "Updates an existing project.", OperationId = "UpdateProject")]
+    [SwaggerResponse(200, "Project updated.", typeof(ProjectResource))]
+    [SwaggerResponse(400, "The request is invalid.")]
+    [SwaggerResponse(404, "The project was not found.")]
+    public async Task<IActionResult> UpdateProject(int projectId, [FromBody] UpdateProjectResource resource)
+    {
+        try
+        {
+            var updateProjectCommand = UpdateProjectCommandFromResourceAssembler.ToCommandFromResource(resource, projectId);
+            var result = await projectCommandService.Handle(updateProjectCommand);
+            if (result is null) return BadRequest("Failed to update project.");
+            var projectResource = ProjectResourceFromEntityAssembler.ToResourceFromEntity(result);
+            return Ok(projectResource);
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("not found"))
+                return NotFound("Project not found.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{projectId:int}")]
+    [SwaggerOperation("Delete Project", "Deletes an existing project.", OperationId = "DeleteProject")]
+    [SwaggerResponse(204, "Project deleted.")]
+    [SwaggerResponse(404, "The project was not found.")]
+    [SwaggerResponse(400, "The request is invalid.")]
+    public async Task<IActionResult> DeleteProject(int projectId)
+    {
+        try
+        {
+            var deleteProjectCommand = new DeleteProjectCommand(projectId);
+            var result = await projectCommandService.Handle(deleteProjectCommand);
+            if (!result) return BadRequest("Failed to delete project.");
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            if (ex.Message.Contains("not found"))
+                return NotFound("Project not found.");
+            return BadRequest(ex.Message);
+        }
     }
 }
