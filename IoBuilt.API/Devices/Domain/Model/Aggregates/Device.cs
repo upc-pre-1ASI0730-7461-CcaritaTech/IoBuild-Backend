@@ -18,16 +18,13 @@ public class Device
         Status = status;
     }
 
-    public Device(string commandName, string commandType, string commandLocation, string commandStatus)
-    {
-        throw new NotImplementedException();
-    }
 
-    public void Update(string name, string type, string location, string status)
+    public void Update(string name, string type, string location, int projectId, string status)
     {
         Name = name;
         Type = type;
         Location = location;
+        ProjectId = projectId;
         Status = status;
     }
 }
