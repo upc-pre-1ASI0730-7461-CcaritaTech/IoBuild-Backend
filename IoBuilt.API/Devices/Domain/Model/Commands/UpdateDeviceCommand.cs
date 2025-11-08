@@ -5,4 +5,5 @@ public record UpdateDeviceCommand(
     string Name,
     string Type,
     string Location,
+    int ProjectId,
     string Status);

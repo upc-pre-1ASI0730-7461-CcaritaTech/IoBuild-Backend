@@ -6,8 +6,8 @@ namespace IoBuilt.API.Devices.Interfaces.REST.Transform;
 public static class DeviceResourceToCommandAssembler
 {
     public static CreateDeviceCommand ToCommand(CreateDeviceResource resource) =>
-        new(resource.Name, resource.Type, resource.Location, resource.Status);
+        new(resource.Name, resource.Type, resource.Location, resource.ProjectId, resource.Status);
 
     public static UpdateDeviceCommand ToCommand(int id, UpdateDeviceResource resource) =>
-        new(id, resource.Name, resource.Type, resource.Location, resource.Status);
+        new(id, resource.Name, resource.Type, resource.Location, resource.ProjectId, resource.Status);
 }

@@ -18,7 +18,7 @@ public class DeviceCommandService : IDeviceCommandService
 
     public async Task<int> Handle(CreateDeviceCommand command)
     {
-        var device = new Device(command.Name, command.Type, command.Location, command.Status);
+        var device = new Device(command.Name, command.Type, command.Location, command.ProjectId, command.Status);
         await _repository.AddAsync(device);
         await _repository.SaveChangesAsync();
         return device.Id;
@@ -27,7 +27,7 @@ public class DeviceCommandService : IDeviceCommandService
     public async Task Handle(UpdateDeviceCommand command)
     {
         var device = await _repository.FindByIdAsync(command.Id) ?? throw new Exception("Device not found");
-        device.Update(command.Name, command.Type, command.Location, command.Status);
+        device.Update(command.Name, command.Type, command.Location, command.ProjectId, command.Status);
         _repository.Update(device);
         await _repository.SaveChangesAsync();
     }
