@@ -1,5 +1,4 @@
-using IoBuilt.API.Devices.Application.Internal.CommandServices;
-using IoBuilt.API.Devices.Application.Internal.QueryServices;
+using IoBuilt.API.Devices.Domain.Services;
 using IoBuilt.API.Devices.Domain.Model.Commands;
 using IoBuilt.API.Devices.Domain.Model.Queries;
 using IoBuilt.API.Devices.Interfaces.REST.Resources;
@@ -12,10 +11,10 @@ namespace IoBuilt.API.Devices.Interfaces.REST;
 [Route("api/v1/[controller]")]
 public class DevicesController : ControllerBase
 {
-    private readonly DeviceCommandService _commandService;
-    private readonly DeviceQueryService _queryService;
+    private readonly IDeviceCommandService _commandService;
+    private readonly IDeviceQueryService _queryService;
 
-    public DevicesController(DeviceCommandService commandService, DeviceQueryService queryService)
+    public DevicesController(IDeviceCommandService commandService, IDeviceQueryService queryService)
     {
         _commandService = commandService;
         _queryService = queryService;
