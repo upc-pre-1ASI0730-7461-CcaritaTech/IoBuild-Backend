@@ -1,0 +1,183 @@
+using IoBuilt.API.IAM.Domain.Model.Aggregates;
+using IoBuilt.API.Profiles.Domain.Model.Aggregates;
+using IoBuilt.API.Projects.Domain.Model.Aggregates;
+using IoBuilt.API.Devices.Domain.Model.Aggregates;
+using Microsoft.EntityFrameworkCore;
+using BCryptNet = BCrypt.Net.BCrypt;
+
+namespace IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+
+public static class ModelBuilderSeedDataExtensions
+{
+    public static void ApplySeedData(this ModelBuilder builder)
+    {
+        // ==================== SEED USERS ====================
+        builder.Entity<User>().HasData(
+            new
+            {
+                Id = 1,
+                Email = "builder@iobuilt.com",
+                PasswordHash = BCryptNet.HashPassword("Builder123!"),
+                Role = "builder"
+            },
+            new
+            {
+                Id = 2,
+                Email = "owner@iobuilt.com",
+                PasswordHash = BCryptNet.HashPassword("Owner123!"),
+                Role = "owner"
+            }
+        );
+
+        // ==================== SEED PROFILES ====================
+        builder.Entity<Profile>().HasData(
+            new
+            {
+                Id = 1,
+                UserId = 1,
+                PhotoUrl = "https://randomuser.me/api/portraits/men/32.jpg",
+                Name = "Juan Pérez",
+                Username = "juan_builder",
+                Address = "Av. Javier Prado 123, San Isidro, Lima",
+                Age = 35,
+                PhoneNumber = "+51 987654321"
+            },
+            new
+            {
+                Id = 2,
+                UserId = 2,
+                PhotoUrl = "https://randomuser.me/api/portraits/women/44.jpg",
+                Name = "María González",
+                Username = "maria_owner",
+                Address = "Calle Las Begonias 456, San Borja, Lima",
+                Age = 42,
+                PhoneNumber = "+51 912345678"
+            }
+        );
+
+        // ==================== SEED PROJECTS ====================
+        // Projects for Builder (User 1 - Juan Pérez)
+        builder.Entity<Project>().HasData(
+            new
+            {
+                Id = 1,
+                Name = "Residencial Los Álamos",
+                Description = "Complejo residencial de lujo con 120 departamentos en San Isidro. Cuenta con áreas verdes, piscina, gimnasio y vigilancia 24/7.",
+                Location = "Av. Conquistadores 890, San Isidro, Lima",
+                TotalUnits = 120,
+                OccupiedUnits = 95,
+                Status = "Active",
+                BuilderId = 1,
+                CreatedDate = new DateTime(2024, 3, 15),
+                ImageUrl = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"
+            },
+            new
+            {
+                Id = 2,
+                Name = "Torres del Pacífico",
+                Description = "Desarrollo de dos torres con vista al mar en Miraflores. 80 departamentos premium con acabados de primera calidad.",
+                Location = "Malecón de la Reserva 456, Miraflores, Lima",
+                TotalUnits = 80,
+                OccupiedUnits = 68,
+                Status = "Active",
+                BuilderId = 1,
+                CreatedDate = new DateTime(2024, 6, 20),
+                ImageUrl = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800"
+            },
+            new
+            {
+                Id = 3,
+                Name = "Condominio Las Casuarinas",
+                Description = "Proyecto residencial en construcción con 60 departamentos tipo loft en Surco. Entrega prevista para Q2 2025.",
+                Location = "Av. Primavera 1234, Santiago de Surco, Lima",
+                TotalUnits = 60,
+                OccupiedUnits = 12,
+                Status = "InProgress",
+                BuilderId = 1,
+                CreatedDate = new DateTime(2024, 9, 10),
+                ImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"
+            }
+        );
+
+        // ==================== SEED DEVICES ====================
+        // Devices for Project 1 (Residencial Los Álamos)
+        builder.Entity<Device>().HasData(
+            new
+            {
+                Id = 1,
+                Name = "Sensor de Temperatura - Torre A",
+                Type = "Temperature",
+                Location = "Torre A - Piso 5",
+                ProjectId = 1,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 2,
+                Name = "Monitor de Humedad - Torre B",
+                Type = "Humidity",
+                Location = "Torre B - Piso 8",
+                ProjectId = 1,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 3,
+                Name = "Medidor de Energía - Áreas Comunes",
+                Type = "Energy",
+                Location = "Áreas Comunes - Gimnasio",
+                ProjectId = 1,
+                Status = "Online"
+            },
+            
+            // Devices for Project 2 (Torres del Pacífico)
+            new
+            {
+                Id = 4,
+                Name = "Sensor de Temperatura - Torre 1",
+                Type = "Temperature",
+                Location = "Torre 1 - Lobby Principal",
+                ProjectId = 2,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 5,
+                Name = "Medidor de Agua - Torre 2",
+                Type = "Water",
+                Location = "Torre 2 - Sistema Central",
+                ProjectId = 2,
+                Status = "Offline"
+            },
+            new
+            {
+                Id = 6,
+                Name = "Monitor de Energía - Piscina",
+                Type = "Energy",
+                Location = "Área de Piscina - Terraza",
+                ProjectId = 2,
+                Status = "Online"
+            },
+            
+            // Devices for Project 3 (Condominio Las Casuarinas)
+            new
+            {
+                Id = 7,
+                Name = "Sensor de Construcción - Área 1",
+                Type = "Construction",
+                Location = "Zona de Construcción - Sector A",
+                ProjectId = 3,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 8,
+                Name = "Monitor de Seguridad - Perímetro",
+                Type = "Security",
+                Location = "Perímetro de Obra",
+                ProjectId = 3,
+                Status = "Offline"
+            }
+        );
+    }
+}

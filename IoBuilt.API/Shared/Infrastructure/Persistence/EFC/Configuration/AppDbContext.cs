@@ -1,5 +1,10 @@
 using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensions;
+//using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
+using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -20,8 +25,21 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
     {
         base.OnModelCreating(builder);
         
-        // Publishing Context
-        //builder.ApplyPublishingConfiguration();
+        // IAM Context
+        builder.ApplyIamConfiguration();
+        
+        // Profiles Context
+        builder.ApplyProfilesConfiguration();
+        
+        
+        // Projects Context
+        builder.ApplyProjectsConfiguration();
+        
+        // Devices Context
+        builder.ApplyDevicesConfiguration();
+        
+        // Apply Seed Data
+        builder.ApplySeedData();
         
         builder.UseSnakeCaseNamingConvention();
     }
