@@ -25,9 +25,18 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
         ITokenService tokenService)
     {
         Console.WriteLine("Entering InvokeAsync");
+
+        // Safely obtain endpoint metadata (GetEndpoint may return null)
+        var endpoint = context.GetEndpoint();
+        if (endpoint == null)
+        {
+            Console.WriteLine("No endpoint metadata available - skipping authorization");
+            await next(context);
+            return;
+        }
+
         // skip authorization if endpoint is decorated with [AllowAnonymous] attribute
-        var allowAnonymous = context.Request.HttpContext.GetEndpoint()!.Metadata
-            .Any(m => m.GetType() == typeof(AllowAnonymousAttribute));
+        var allowAnonymous = endpoint.Metadata.Any(m => m.GetType() == typeof(AllowAnonymousAttribute));
         Console.WriteLine($"Allow Anonymous is {allowAnonymous}");
         if (allowAnonymous)
         {
@@ -36,29 +45,62 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             await next(context);
             return;
         }
+
         Console.WriteLine("Entering authorization");
+
         // get token from request header
-        var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+        if (!context.Request.Headers.TryGetValue("Authorization", out var authHeaderValues))
+        {
+            Console.WriteLine("Authorization header missing");
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized");
+            return;
+        }
 
-        // if token is null then throw exception
-        if (token == null) throw new Exception("Null or invalid token");
+        var token = authHeaderValues.FirstOrDefault()?.Split(' ').Last();
 
-        // validate token
-        var userId = await tokenService.ValidateToken(token);
+        // if token is null then return 401
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            Console.WriteLine("Token is null or empty");
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized");
+            return;
+        }
 
-        // if token is invalid then throw exception
-        if (userId == null) throw new Exception("Invalid token");
+        try
+        {
+            // validate token
+            var userId = await tokenService.ValidateToken(token);
 
-        // get user by id
-        var getUserByIdQuery = new GetUserByIdQuery(userId.Value);
+            // if token is invalid then return 401
+            if (userId == null)
+            {
+                Console.WriteLine("Token validation failed");
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Unauthorized");
+                return;
+            }
 
-        // set user in HttpContext.Items["User"]
+            // get user by id
+            var getUserByIdQuery = new GetUserByIdQuery(userId.Value);
 
-        var user = await userQueryService.Handle(getUserByIdQuery);
-        Console.WriteLine("Successful authorization. Updating Context...");
-        context.Items["User"] = user;
-        Console.WriteLine("Continuing with Middleware Pipeline");
-        // call next middleware
-        await next(context);
+            // set user in HttpContext.Items["User"]
+            var user = await userQueryService.Handle(getUserByIdQuery);
+            Console.WriteLine("Successful authorization. Updating Context...");
+            context.Items["User"] = user;
+            Console.WriteLine("Continuing with Middleware Pipeline");
+
+            // call next middleware
+            await next(context);
+        }
+        catch (Exception ex)
+        {
+            // Log and return 401 for token related and authorization errors
+            Console.WriteLine($"Authorization error: {ex.Message}");
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            await context.Response.WriteAsync("Unauthorized");
+            return;
+        }
     }
 }
