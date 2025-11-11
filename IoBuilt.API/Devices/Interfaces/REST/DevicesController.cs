@@ -27,10 +27,10 @@ public class DevicesController : ControllerBase
         return devices.Select(DeviceResourceFromEntityAssembler.ToResource);
     }
 
-    [HttpGet("{id}")]
-    public async Task<DeviceResource?> GetById(int id)
+    [HttpGet("{deviceId}")]
+    public async Task<DeviceResource?> GetById([FromRoute] int deviceId)
     {
-        var device = await _queryService.Handle(new GetDeviceByIdQuery(id));
+        var device = await _queryService.Handle(new GetDeviceByIdQuery(deviceId));
         return device is null ? null : DeviceResourceFromEntityAssembler.ToResource(device);
     }
 
@@ -42,18 +42,18 @@ public class DevicesController : ControllerBase
         return Created($"api/v1/devices/{id}", new { Id = id });
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] UpdateDeviceResource resource)
+    [HttpPut("{deviceId}")]
+    public async Task<IActionResult> Update([FromRoute] int deviceId, [FromBody] UpdateDeviceResource resource)
     {
-        var command = DeviceResourceToCommandAssembler.ToCommand(id, resource);
+        var command = DeviceResourceToCommandAssembler.ToCommand(deviceId, resource);
         await _commandService.Handle(command);
         return Ok();
     }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    [HttpDelete("{deviceId}")]
+    public async Task<IActionResult> Delete([FromRoute] int deviceId)
     {
-        await _commandService.Handle(new DeleteDeviceCommand(id));
+        await _commandService.Handle(new DeleteDeviceCommand(deviceId));
         return NoContent();
     }
 }

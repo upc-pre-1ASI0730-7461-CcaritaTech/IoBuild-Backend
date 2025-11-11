@@ -12,6 +12,7 @@ public static class ModelBuilderExtensions
         builder.Entity<Device>().Property(x => x.Name).IsRequired();
         builder.Entity<Device>().Property(x => x.Type).IsRequired();
         builder.Entity<Device>().Property(x => x.Location);
+        builder.Entity<Device>().Property(x => x.MacAddress).IsRequired();
         builder.Entity<Device>().Property(x => x.ProjectId).IsRequired();
         builder.Entity<Device>().Property(x => x.Status).IsRequired();
     }
