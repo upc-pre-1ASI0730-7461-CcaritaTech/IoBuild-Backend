@@ -18,7 +18,7 @@ public class DeviceCommandService : IDeviceCommandService
 
     public async Task<int> Handle(CreateDeviceCommand command)
     {
-        var device = new Device(command.Name, command.Type, command.Location, command.ProjectId, command.Status);
+        var device = new Device(command.Name, command.Type, command.Location, command.MacAddress, command.ProjectId, command.Status);
         await _repository.AddAsync(device);
         await _repository.SaveChangesAsync();
         return device.Id;
