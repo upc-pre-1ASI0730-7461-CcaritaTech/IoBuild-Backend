@@ -1,6 +1,7 @@
 using IoBuilt.API.IAM.Domain.Model.Aggregates;
 using IoBuilt.API.Profiles.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.Aggregates;
+using IoBuilt.API.Projects.Domain.Model.ValueObjects;
 using IoBuilt.API.Devices.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
@@ -66,7 +67,7 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Av. Conquistadores 890, San Isidro, Lima",
                 TotalUnits = 120,
                 OccupiedUnits = 95,
-                Status = "Active",
+                Status = EProjectStatus.OnGoing,
                 BuilderId = 1,
                 CreatedDate = new DateTime(2024, 3, 15),
                 ImageUrl = "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=800"
@@ -79,7 +80,7 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Malecón de la Reserva 456, Miraflores, Lima",
                 TotalUnits = 80,
                 OccupiedUnits = 68,
-                Status = "Active",
+                Status = EProjectStatus.OnGoing,
                 BuilderId = 1,
                 CreatedDate = new DateTime(2024, 6, 20),
                 ImageUrl = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800"
@@ -92,7 +93,7 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Av. Primavera 1234, Santiago de Surco, Lima",
                 TotalUnits = 60,
                 OccupiedUnits = 12,
-                Status = "InProgress",
+                Status = EProjectStatus.OnGoing,
                 BuilderId = 1,
                 CreatedDate = new DateTime(2024, 9, 10),
                 ImageUrl = "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800"
