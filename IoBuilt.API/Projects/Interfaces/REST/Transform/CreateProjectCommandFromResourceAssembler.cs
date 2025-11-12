@@ -8,7 +8,7 @@ public static class CreateProjectCommandFromResourceAssembler
     public static CreateProjectCommand ToCommandFromResource(CreateProjectResource resource)
     {
         return new CreateProjectCommand(resource.Name, resource.Description, resource.Location,
-            resource.TotalUnits, resource.OccupiedUnits, resource.Status, resource.BuilderId,
+            resource.TotalUnits, resource.OccupiedUnits, resource.BuilderId,
             resource.ImageUrl);
     }
 }

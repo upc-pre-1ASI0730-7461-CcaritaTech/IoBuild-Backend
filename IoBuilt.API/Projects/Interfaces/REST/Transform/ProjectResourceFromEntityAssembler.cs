@@ -14,7 +14,7 @@ public static class ProjectResourceFromEntityAssembler
             entity.Location,
             entity.TotalUnits,
             entity.OccupiedUnits,
-            entity.Status,
+            entity.Status.ToString(),
             entity.BuilderId,
             entity.CreatedDate,
             entity.ImageUrl);
