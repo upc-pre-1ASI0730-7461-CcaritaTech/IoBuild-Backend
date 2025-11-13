@@ -130,6 +130,24 @@ public static class ModelBuilderSeedDataExtensions
                 ProjectId = 1,
                 Status = "Online"
             },
+            new
+            {
+                Id = 9,
+                Name = "Medidor de Agua - Torre A",
+                Type = "Water",
+                Location = "Torre A - Sistema Central",
+                ProjectId = 1,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 10,
+                Name = "Control Iluminación - Lobby",
+                Type = "Lighting",
+                Location = "Lobby Principal",
+                ProjectId = 1,
+                Status = "Online"
+            },
             
             // Devices for Project 2 (Torres del Pacífico)
             new
@@ -159,6 +177,24 @@ public static class ModelBuilderSeedDataExtensions
                 ProjectId = 2,
                 Status = "Online"
             },
+            new
+            {
+                Id = 11,
+                Name = "Control de Acceso - Entrada Principal",
+                Type = "Access Control",
+                Location = "Entrada Principal - Torre 1",
+                ProjectId = 2,
+                Status = "Online"
+            },
+            new
+            {
+                Id = 12,
+                Name = "Climatización - Áreas Comunes",
+                Type = "HVAC",
+                Location = "Áreas Comunes",
+                ProjectId = 2,
+                Status = "Online"
+            },
             
             // Devices for Project 3 (Condominio Las Casuarinas)
             new
@@ -180,5 +216,144 @@ public static class ModelBuilderSeedDataExtensions
                 Status = "Offline"
             }
         );
+
+        // ==================== SEED UNITS ====================
+        builder.Entity<Unit>().HasData(
+            // Units for Owner (User 2 - María González) in Project 1
+            new
+            {
+                Id = 1,
+                ProjectId = 1,
+                UnitNumber = "A-501",
+                OwnerId = 2
+            },
+            new
+            {
+                Id = 2,
+                ProjectId = 1,
+                UnitNumber = "A-502",
+                OwnerId = 2
+            },
+            // Additional units for other owners in Project 1
+            new
+            {
+                Id = 3,
+                ProjectId = 1,
+                UnitNumber = "B-801",
+                OwnerId = 3
+            },
+            new
+            {
+                Id = 4,
+                ProjectId = 2,
+                UnitNumber = "T1-1205",
+                OwnerId = 4
+            },
+            new
+            {
+                Id = 5,
+                ProjectId = 2,
+                UnitNumber = "T2-0801",
+                OwnerId = 2
+            }
+        );
+
+        // ==================== SEED DEVICE LOGS ====================
+        // Temperature logs for Device 1 (last 30 days)
+        var baseDate = DateTime.UtcNow.AddDays(-30);
+        var deviceLogs = new List<object>();
+        
+        // Generate daily temperature averages for Device 1
+        for (int i = 0; i < 30; i++)
+        {
+            deviceLogs.Add(new
+            {
+                Id = 1000 + i,
+                DeviceId = 1,
+                Timestamp = baseDate.AddDays(i),
+                Value = 22.0 + (Math.Sin(i * 0.2) * 2), // Simulates temperature variation
+                Type = "temperature_daily_avg",
+                Metadata = "{}"
+            });
+        }
+
+        // Generate daily energy totals for Device 3
+        for (int i = 0; i < 30; i++)
+        {
+            deviceLogs.Add(new
+            {
+                Id = 2000 + i,
+                DeviceId = 3,
+                Timestamp = baseDate.AddDays(i),
+                Value = 800.0 + (Math.Sin(i * 0.3) * 100), // Simulates energy consumption
+                Type = "energy_daily_total",
+                Metadata = "{}"
+            });
+        }
+
+        // Generate hourly temperature data for Device 4 (last 7 days)
+        var recentDate = DateTime.UtcNow.AddDays(-7);
+        for (int day = 0; day < 7; day++)
+        {
+            for (int hour = 0; hour < 24; hour++)
+            {
+                deviceLogs.Add(new
+                {
+                    Id = 3000 + (day * 24) + hour,
+                    DeviceId = 4,
+                    Timestamp = recentDate.AddDays(day).AddHours(hour),
+                    Value = 23.0 + (Math.Sin((day * 24 + hour) * 0.1) * 3),
+                    Type = "temperature",
+                    Metadata = "{}"
+                });
+            }
+        }
+
+        // Generate hourly energy data for Device 6 (last 7 days)
+        for (int day = 0; day < 7; day++)
+        {
+            for (int hour = 0; hour < 24; hour++)
+            {
+                deviceLogs.Add(new
+                {
+                    Id = 4000 + (day * 24) + hour,
+                    DeviceId = 6,
+                    Timestamp = recentDate.AddDays(day).AddHours(hour),
+                    Value = 40.0 + (Math.Sin((day * 24 + hour) * 0.15) * 5),
+                    Type = "energy",
+                    Metadata = "{}"
+                });
+            }
+        }
+
+        // Generate daily water usage data for Device 5 (last 30 days)
+        for (int i = 0; i < 30; i++)
+        {
+            deviceLogs.Add(new
+            {
+                Id = 5000 + i,
+                DeviceId = 5,
+                Timestamp = baseDate.AddDays(i),
+                Value = 150.0 + (Math.Sin(i * 0.25) * 20), // Water usage in liters
+                Type = "water_daily_total",
+                Metadata = "{}"
+            });
+        }
+
+        // Generate weekly water usage for Device 9 (last 7 days)
+        for (int i = 0; i < 7; i++)
+        {
+            deviceLogs.Add(new
+            {
+                Id = 6000 + i,
+                DeviceId = 9,
+                Timestamp = recentDate.AddDays(i),
+                Value = 120.0 + (Math.Sin(i * 0.4) * 15),
+                Type = "water",
+                Metadata = "{}"
+            });
+        }
+
+        builder.Entity<DeviceLog>().HasData(deviceLogs.ToArray());
     }
 }
