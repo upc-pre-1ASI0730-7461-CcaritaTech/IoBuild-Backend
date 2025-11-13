@@ -142,6 +142,8 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Torre A - Sistema Central",
                 ProjectId = 1,
                 Status = "Online"
+                ,
+                MacAddress = "00:11:22:33:44:60"
             },
             new
             {
@@ -151,6 +153,8 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Lobby Principal",
                 ProjectId = 1,
                 Status = "Online"
+                ,
+                MacAddress = "00:11:22:33:44:61"
             },
             
             // Devices for Project 2 (Torres del Pacífico)
@@ -192,6 +196,8 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Entrada Principal - Torre 1",
                 ProjectId = 2,
                 Status = "Online"
+                ,
+                MacAddress = "00:11:22:33:44:62"
             },
             new
             {
@@ -201,6 +207,8 @@ public static class ModelBuilderSeedDataExtensions
                 Location = "Áreas Comunes",
                 ProjectId = 2,
                 Status = "Online"
+                ,
+                MacAddress = "00:11:22:33:44:63"
             },
             
             // Devices for Project 3 (Condominio Las Casuarinas)
