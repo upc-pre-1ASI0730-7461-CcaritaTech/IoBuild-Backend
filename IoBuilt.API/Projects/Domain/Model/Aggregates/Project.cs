@@ -47,7 +47,7 @@ public partial class Project
         Description = command.Description;
         Location = command.Location;
         TotalUnits = command.TotalUnits;
-        OccupiedUnits = command.OccupiedUnits;
+        OccupiedUnits = 0;
         Status = EProjectStatus.Planned;
         BuilderId = command.BuilderId;
         CreatedDate = new DateTime();
