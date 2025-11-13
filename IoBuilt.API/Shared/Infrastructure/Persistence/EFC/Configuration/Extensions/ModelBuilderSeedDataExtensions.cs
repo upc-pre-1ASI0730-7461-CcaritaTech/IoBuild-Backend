@@ -110,7 +110,9 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Temperature",
                 Location = "Torre A - Piso 5",
                 ProjectId = 1,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:55"
+                
             },
             new
             {
@@ -119,7 +121,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Humidity",
                 Location = "Torre B - Piso 8",
                 ProjectId = 1,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:56"
             },
             new
             {
@@ -128,7 +131,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Energy",
                 Location = "Áreas Comunes - Gimnasio",
                 ProjectId = 1,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:57"
             },
             new
             {
@@ -157,7 +161,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Temperature",
                 Location = "Torre 1 - Lobby Principal",
                 ProjectId = 2,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:58"
             },
             new
             {
@@ -166,7 +171,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Water",
                 Location = "Torre 2 - Sistema Central",
                 ProjectId = 2,
-                Status = "Offline"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:59"
             },
             new
             {
@@ -175,7 +181,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Energy",
                 Location = "Área de Piscina - Terraza",
                 ProjectId = 2,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:5A"
             },
             new
             {
@@ -204,7 +211,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Construction",
                 Location = "Zona de Construcción - Sector A",
                 ProjectId = 3,
-                Status = "Online"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:5B"
             },
             new
             {
@@ -213,7 +221,8 @@ public static class ModelBuilderSeedDataExtensions
                 Type = "Security",
                 Location = "Perímetro de Obra",
                 ProjectId = 3,
-                Status = "Offline"
+                Status = "Online",
+                MacAddress = "00:11:22:33:44:5C"
             }
         );
 
