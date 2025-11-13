@@ -101,6 +101,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IProjectCommandService, IoBuilt.API.Projects.Application.Internal.CommandServices.ProjectCommandService>();
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IProjectRepository, IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Repositories.ProjectRepository>();
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IProjectQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.ProjectQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IUnitRepository, IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Repositories.UnitRepository>();
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitCommandService, IoBuilt.API.Projects.Application.Internal.CommandServices.UnitCommandService>();
+builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.UnitQueryService>();
 
 // IAM Bounded Context
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Repositories.IUserRepository, IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
@@ -126,6 +129,12 @@ builder.Services.AddScoped<IoBuilt.API.Profiles.Interfaces.ACL.IProfilesContextF
 builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IDeviceCommandService, DeviceCommandService>();
 builder.Services.AddScoped<IDeviceQueryService, DeviceQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Devices.Domain.Repositories.IDeviceLogRepository, IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories.DeviceLogRepository>();
+
+// Analytics Bounded Context
+builder.Services.AddScoped<IoBuilt.API.Analytics.Domain.Services.IAnalyticsQueryService, IoBuilt.API.Analytics.Application.Internal.QueryServices.AnalyticsQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Analytics.Interfaces.ACL.IDevicesContextFacade, IoBuilt.API.Analytics.Application.ACL.DevicesContextFacade>();
+builder.Services.AddScoped<IoBuilt.API.Analytics.Interfaces.ACL.IProjectsContextFacade, IoBuilt.API.Analytics.Application.ACL.ProjectsContextFacade>();
 
 // IAM Bounded Context
 
