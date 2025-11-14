@@ -6,5 +6,5 @@ namespace IoBuilt.API.Devices.Interfaces.REST.Transform;
 public static class DeviceResourceFromEntityAssembler
 {
     public static DeviceResource ToResource(Device device) =>
-        new(device.Id, device.Name, device.Type, device.Location, device.ProjectId, device.Status);
+        new(device.Id, device.Name, device.Type, device.Location, device.MacAddress, device.ProjectId, device.Status);
 }

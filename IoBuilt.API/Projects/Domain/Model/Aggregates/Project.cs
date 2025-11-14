@@ -1,4 +1,5 @@
 using IoBuilt.API.Projects.Domain.Model.Commands;
+using IoBuilt.API.Projects.Domain.Model.ValueObjects;
 
 namespace IoBuilt.API.Projects.Domain.Model.Aggregates;
 
@@ -13,7 +14,7 @@ public partial class Project
     public string Location { get; private set; }
     public int TotalUnits { get; private set; }
     public int OccupiedUnits { get; private set; }
-    public string Status { get; private set; }
+    public EProjectStatus Status { get; private set; }
     public int BuilderId { get; private set; }
     public DateTime CreatedDate { get; private set; }
     public string ImageUrl { get; private set; }
@@ -23,11 +24,11 @@ public partial class Project
         Name = string.Empty;
         Description = string.Empty;
         Location = string.Empty;
-        Status = string.Empty;
+        Status = EProjectStatus.Planned;
         ImageUrl = string.Empty;
     }
     
-    public Project(string name, string description, string location, int totalUnits, int occupiedUnits, string status, int builderId, DateTime createdDate, string imageUrl)
+    public Project(string name, string description, string location, int totalUnits, int occupiedUnits, EProjectStatus status, int builderId, DateTime createdDate, string imageUrl)
     {
         Name = name;
         Description = description;
@@ -46,8 +47,8 @@ public partial class Project
         Description = command.Description;
         Location = command.Location;
         TotalUnits = command.TotalUnits;
-        OccupiedUnits = command.OccupiedUnits;
-        Status = command.Status;
+        OccupiedUnits = 0;
+        Status = EProjectStatus.Planned;
         BuilderId = command.BuilderId;
         CreatedDate = new DateTime();
         ImageUrl = command.ImageUrl;
