@@ -23,13 +23,33 @@ builder.Services.AddControllers(options => options.Conventions.Add(new KebabCase
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Add CORS Policy
+// Add CORS Policy (configurable)
+// Reads AllowedOrigins from configuration. In Development we allow any origin for convenience.
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAllPolicy",
-        policy => policy.AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader());
+    options.AddPolicy("DefaultCorsPolicy", policy =>
+    {
+        if (builder.Environment.IsDevelopment())
+        {
+            // Development: allow all origins to simplify local testing
+            policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        }
+        else if (allowedOrigins != null && allowedOrigins.Length > 0)
+        {
+            // Production: only allow configured origins
+            policy.WithOrigins(allowedOrigins)
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        }
+        else
+        {
+            // Fallback: no origins explicitly allowed (CORS will block cross-origin requests).
+            // We still allow methods/headers for same-origin requests.
+            policy.AllowAnyMethod().AllowAnyHeader();
+        }
+    });
 });
 
 if (connectionString == null) throw new InvalidOperationException("Connection string not found.");
@@ -174,7 +194,7 @@ app.UseSwaggerUI();
 
 
 // Apply CORS Policy
-app.UseCors("AllowAllPolicy");
+app.UseCors("DefaultCorsPolicy");
 
 // Add Authorization Middleware to Pipeline
 app.UseRequestAuthorization();
