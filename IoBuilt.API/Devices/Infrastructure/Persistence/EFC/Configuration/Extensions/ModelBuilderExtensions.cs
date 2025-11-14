@@ -23,6 +23,6 @@ public static class ModelBuilderExtensions
         builder.Entity<DeviceLog>().Property(x => x.Timestamp).IsRequired();
         builder.Entity<DeviceLog>().Property(x => x.Value).IsRequired();
         builder.Entity<DeviceLog>().Property(x => x.Type).IsRequired();
-        builder.Entity<DeviceLog>().Property(x => x.Metadata).HasDefaultValue("{}");
+        builder.Entity<DeviceLog>().Property(x => x.Metadata).IsRequired();
     }
 }
