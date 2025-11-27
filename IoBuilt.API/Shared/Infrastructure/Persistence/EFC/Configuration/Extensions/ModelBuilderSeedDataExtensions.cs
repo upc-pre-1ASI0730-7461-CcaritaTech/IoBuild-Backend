@@ -3,6 +3,7 @@ using IoBuilt.API.Profiles.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.ValueObjects;
 using IoBuilt.API.Devices.Domain.Model.Aggregates;
+using IoBuilt.API.Subscriptions.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
 
@@ -372,5 +373,31 @@ public static class ModelBuilderSeedDataExtensions
         }
 
         builder.Entity<DeviceLog>().HasData(deviceLogs.ToArray());
+
+        // ==================== SEED SUBSCRIPTIONS ====================
+        builder.Entity<Subscription>().HasData(
+            new
+            {
+                Id = 1,
+                BuilderId = 1,
+                Plan = "Professional",
+                Status = "active",
+                StartDate = new DateTime(2024, 1, 1),
+                EndDate = new DateTime(2025, 1, 1),
+                Price = 799m,
+                Features = new List<string> { "Up to 200 IoT devices", "Advanced dashboard", "24/7 priority support" }
+            },
+            new
+            {
+                Id = 2,
+                BuilderId = 2,
+                Plan = "Starter",
+                Status = "active",
+                StartDate = new DateTime(2024, 6, 1),
+                EndDate = new DateTime(2025, 6, 1),
+                Price = 299m,
+                Features = new List<string> { "Up to 50 IoT devices", "Basic dashboard", "Email support" }
+            }
+        );
     }
 }

@@ -5,6 +5,7 @@ using IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensio
 //using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Subscriptions.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration;
@@ -37,6 +38,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         
         // Devices Context
         builder.ApplyDevicesConfiguration();
+        
+        // Subscriptions Context
+        builder.ApplySubscriptionsConfiguration();
         
         // Apply Seed Data
         builder.ApplySeedData();

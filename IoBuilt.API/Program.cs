@@ -11,6 +11,11 @@ using IoBuilt.API.Devices.Application.Internal.QueryServices;
 using IoBuilt.API.Devices.Domain.Repositories;
 using IoBuilt.API.Devices.Domain.Services;
 using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories;
+using IoBuilt.API.Subscriptions.Application.Internal.CommandServices;
+using IoBuilt.API.Subscriptions.Application.Internal.QueryServices;
+using IoBuilt.API.Subscriptions.Domain.Repositories;
+using IoBuilt.API.Subscriptions.Domain.Services;
+using IoBuilt.API.Subscriptions.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -150,6 +155,11 @@ builder.Services.AddScoped<IDeviceRepository, DeviceRepository>();
 builder.Services.AddScoped<IDeviceCommandService, DeviceCommandService>();
 builder.Services.AddScoped<IDeviceQueryService, DeviceQueryService>();
 builder.Services.AddScoped<IoBuilt.API.Devices.Domain.Repositories.IDeviceLogRepository, IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories.DeviceLogRepository>();
+
+// Subscriptions Bounded Context
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
 
 // Analytics Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Analytics.Domain.Services.IAnalyticsQueryService, IoBuilt.API.Analytics.Application.Internal.QueryServices.AnalyticsQueryService>();
