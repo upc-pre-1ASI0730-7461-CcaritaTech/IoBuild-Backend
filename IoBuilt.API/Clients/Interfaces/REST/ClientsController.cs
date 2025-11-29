@@ -31,47 +31,16 @@ public class ClientsController(IClientQueryService clientQueryService, IClientCo
     }
 
     [HttpGet]
-    [SwaggerOperation("Get All Clients", "Get all clients, optionally filtered by project ID or account statement.", OperationId = "GetAllClients")]
+    [SwaggerOperation("Get All Clients", "Get all clients.", OperationId = "GetAllClients")]
     [SwaggerResponse(200, "The clients were found and returned.", typeof(IEnumerable<ClientResource>))]
-    public async Task<IActionResult> GetAllClients([FromQuery] int? projectId = null, [FromQuery] string? accountStatement = null)
+    public async Task<IActionResult> GetAllClients()
     {
-        // If no filters, return all clients
-        if (projectId is null && accountStatement is null)
-        {
-            var getAllClientsQuery = new GetAllClientsQuery();
-            var allClients = await clientQueryService.Handle(getAllClientsQuery);
-            var allClientResources = allClients.Select(ClientResourceFromEntityAssembler.ToResourceFromEntity);
-            return Ok(allClientResources);
-        }
-
-        // If only projectId filter is provided
-        if (projectId is not null)
-        {
-            var getClientsByProjectIdQuery = new GetClientsByProjectIdQuery(projectId.Value);
-            var clients = await clientQueryService.Handle(getClientsByProjectIdQuery);
-            var clientResources = clients.Select(ClientResourceFromEntityAssembler.ToResourceFromEntity);
-            return Ok(clientResources);
-        }
-
-        // If only accountStatement filter is provided
-        if (accountStatement is not null)
-        {
-            try
-            {
-                var statement = Enum.Parse<IoBuilt.API.Clients.Domain.Model.ValueObjects.EAccountStatement>(accountStatement);
-                var getClientsByAccountStatementQuery = new GetClientsByAccountStatementQuery(statement);
-                var clients = await clientQueryService.Handle(getClientsByAccountStatementQuery);
-                var clientResources = clients.Select(ClientResourceFromEntityAssembler.ToResourceFromEntity);
-                return Ok(clientResources);
-            }
-            catch (ArgumentException)
-            {
-                return BadRequest($"Invalid account statement: {accountStatement}");
-            }
-        }
-
-        return Ok(new List<ClientResource>());
+        var getAllClientsQuery = new GetAllClientsQuery();
+        var allClients = await clientQueryService.Handle(getAllClientsQuery);
+        var allClientResources = allClients.Select(ClientResourceFromEntityAssembler.ToResourceFromEntity);
+        return Ok(allClientResources);
     }
+
 
     [HttpPost]
     [SwaggerOperation("Create a new Client", "Creates a new client.", OperationId = "CreateClient")]
