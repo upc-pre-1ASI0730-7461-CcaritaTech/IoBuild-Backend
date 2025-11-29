@@ -34,5 +34,5 @@
         <!-- Mediator pattern related packages -->
         <PackageReference Include="Cortex.Mediator" Version="1.6.1"/>
     </ItemGroup>
-
+    
 </Project>
