@@ -2,6 +2,7 @@ using IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions
 using IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using IoBuilt.API.Profiles.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensions;
+using IoBuilt.API.Clients.Infrastructure.Persistence.EFC.Configuration.Extensions;
 //using IoBuilt.API.Monitoring.Infrastructure.Persistence.EFC.Configuration.Extensions;
 using EntityFrameworkCore.CreatedUpdatedDate.Extensions;
 using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Configuration.Extensions;
@@ -34,6 +35,9 @@ public class AppDbContext(DbContextOptions options) : DbContext(options)
         
         // Projects Context
         builder.ApplyProjectsConfiguration();
+        
+        // Clients Context
+        builder.ApplyClientsConfiguration();
         
         // Devices Context
         builder.ApplyDevicesConfiguration();

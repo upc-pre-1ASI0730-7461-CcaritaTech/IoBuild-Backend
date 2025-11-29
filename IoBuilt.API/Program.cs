@@ -125,6 +125,11 @@ builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IUnitReposit
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitCommandService, IoBuilt.API.Projects.Application.Internal.CommandServices.UnitCommandService>();
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.UnitQueryService>();
 
+// Clients Bounded Context
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Services.IClientCommandService, IoBuilt.API.Clients.Application.Internal.CommandServices.ClientCommandService>();
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Services.IClientQueryService, IoBuilt.API.Clients.Application.Internal.QueryServices.ClientQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Repositories.IClientRepository, IoBuilt.API.Clients.Infrastructure.Persistence.EFC.Repositories.ClientRepository>();
+
 // IAM Bounded Context
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Repositories.IUserRepository, IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Services.IUserQueryService, IoBuilt.API.IAM.Application.Internal.QueryServices.UserQueryService>();
