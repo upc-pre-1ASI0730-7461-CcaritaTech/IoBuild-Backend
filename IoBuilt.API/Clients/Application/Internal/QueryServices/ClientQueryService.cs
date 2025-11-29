@@ -16,14 +16,4 @@ public class ClientQueryService(IClientRepository clientRepository) : IClientQue
     {
         return await clientRepository.FindByIdAsync(query.ClientId);
     }
-
-    public async Task<IEnumerable<Client>> Handle(GetClientsByProjectIdQuery query)
-    {
-        return await clientRepository.FindByProjectIdAsync(query.ProjectId);
-    }
-
-    public async Task<IEnumerable<Client>> Handle(GetClientsByAccountStatementQuery query)
-    {
-        return await clientRepository.FindByAccountStatementAsync(query.AccountStatement);
-    }
 }
