@@ -81,35 +81,25 @@ public static class DbContextSeedHelper
         context.Set<Plan>().AddRange(starterPlan, professionalPlan, enterprisePlan);
         context.SaveChanges();
 
+        // Get the IDs of the saved plans
+        var professionalPlanId = context.Set<Plan>().First(p => p.Name == "Professional").Id;
+        var starterPlanId = context.Set<Plan>().First(p => p.Name == "Starter").Id;
+
         // Seed Subscriptions
         var subscription1 = new Subscription(
             builderId: 1,
-            plan: "Professional",
+            planId: professionalPlanId,
             status: "active",
             startDate: new DateTime(2024, 1, 1),
-            endDate: new DateTime(2025, 1, 1),
-            price: 799m,
-            features: new List<string>
-            {
-                "Up to 200 IoT devices",
-                "Advanced dashboard",
-                "24/7 priority support"
-            }
+            endDate: new DateTime(2025, 1, 1)
         );
 
         var subscription2 = new Subscription(
             builderId: 2,
-            plan: "Starter",
+            planId: starterPlanId,
             status: "active",
             startDate: new DateTime(2024, 6, 1),
-            endDate: new DateTime(2025, 6, 1),
-            price: 299m,
-            features: new List<string>
-            {
-                "Up to 50 IoT devices",
-                "Basic dashboard",
-                "Email support"
-            }
+            endDate: new DateTime(2025, 6, 1)
         );
 
         context.Set<Subscription>().AddRange(subscription1, subscription2);
