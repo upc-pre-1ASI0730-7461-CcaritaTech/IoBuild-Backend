@@ -3,6 +3,7 @@ using IoBuilt.API.Profiles.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.ValueObjects;
 using IoBuilt.API.Devices.Domain.Model.Aggregates;
+using IoBuilt.API.Subscriptions.Domain.Model.Aggregates;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
 
@@ -372,5 +373,8 @@ public static class ModelBuilderSeedDataExtensions
         }
 
         builder.Entity<DeviceLog>().HasData(deviceLogs.ToArray());
+
+        // NOTE: Subscriptions and Plans seeding is done at runtime in Program.cs
+        // because they have List<string> properties with custom conversions that don't work well with HasData
     }
 }
