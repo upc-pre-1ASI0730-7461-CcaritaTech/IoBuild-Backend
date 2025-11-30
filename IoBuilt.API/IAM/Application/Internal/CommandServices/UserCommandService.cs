@@ -60,4 +60,44 @@ public class UserCommandService(
             throw new Exception($"An error occurred while creating user: {e.Message}");
         }
     }
+    
+    /// <summary>
+    /// Handle update password command
+    /// </summary>
+    /// <param name="command">The update password command</param>
+    /// <returns>A task representing the asynchronous operation</returns>
+    public async Task Handle(UpdatePasswordCommand command)
+    {
+        var user = await userRepository.FindByIdAsync(command.UserId);
+        if (user == null)
+            throw new Exception("User not found");
+
+        if (!hashingService.VerifyPassword(command.CurrentPassword, user.PasswordHash))
+            throw new Exception("Invalid current password");
+
+        if (command.NewPassword.Length < 8)
+            throw new Exception("Password must be at least 8 characters long");
+
+        var newPasswordHash = hashingService.HashPassword(command.NewPassword);
+        user.UpdatePasswordHash(newPasswordHash);
+
+        userRepository.Update(user);
+        await unitOfWork.CompleteAsync();
+    }
+    
+    /// <summary>
+    /// Handle set second email command
+    /// </summary>
+    /// <param name="command">The set second email command</param>
+    /// <returns>A task representing the asynchronous operation</returns>
+    public async Task Handle(SecondEmailCommand command)
+    {
+        var user = await userRepository.FindByIdAsync(command.UserId);
+        if (user is null)
+            throw new Exception("User not found");
+
+        user.UpdateSecondEmail(command.SecondEmail);
+        userRepository.Update(user);
+        await unitOfWork.CompleteAsync();
+    }
 }
