@@ -22,5 +22,24 @@ public static class ModelBuilderExtensions
                 v => string.Join('|', v ?? new List<string>()),
                 v => string.IsNullOrWhiteSpace(v) ? new List<string>() : v.Split('|', StringSplitOptions.RemoveEmptyEntries).ToList()
             );
+        
+        // Plan Configuration
+        builder.Entity<Plan>().ToTable("plans");
+        builder.Entity<Plan>().HasKey(x => x.Id);
+        builder.Entity<Plan>().Property(x => x.Id).IsRequired().ValueGeneratedOnAdd();
+        builder.Entity<Plan>().Property(x => x.Name).IsRequired().HasMaxLength(100);
+        builder.Entity<Plan>().Property(x => x.Price).HasColumnType("decimal(18,2)").IsRequired();
+        builder.Entity<Plan>().Property(x => x.Description).IsRequired().HasMaxLength(500);
+        builder.Entity<Plan>().Property(x => x.MaxDevices).IsRequired();
+        builder.Entity<Plan>().Property(x => x.MaxAdministrators).IsRequired();
+        builder.Entity<Plan>().Property(x => x.SupportLevel).IsRequired().HasMaxLength(100);
+        builder.Entity<Plan>().Property(x => x.HasAPI).IsRequired();
+        builder.Entity<Plan>().Property(x => x.HasAnalytics).IsRequired();
+        
+        builder.Entity<Plan>().Property(x => x.Features)
+            .HasConversion(
+                v => string.Join('|', v ?? new List<string>()),
+                v => string.IsNullOrWhiteSpace(v) ? new List<string>() : v.Split('|', StringSplitOptions.RemoveEmptyEntries).ToList()
+            );
     }
 }
