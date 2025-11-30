@@ -164,6 +164,11 @@ builder.Services.AddScoped<IPlanRepository, IoBuilt.API.Subscriptions.Infrastruc
 builder.Services.AddScoped<IPlanQueryService, IoBuilt.API.Subscriptions.Application.Internal.QueryServices.PlanQueryService>();
 builder.Services.AddScoped<IoBuilt.API.Subscriptions.Interfaces.ACL.ISubscriptionsContextFacade, IoBuilt.API.Subscriptions.Application.ACL.SubscriptionsContextFacade>();
 
+// Stripe Payment Configuration
+builder.Services.Configure<IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Configuration.StripeSettings>(
+    builder.Configuration.GetSection("StripeSettings"));
+builder.Services.AddScoped<IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Services.StripePaymentService>();
+
 // Analytics Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Analytics.Domain.Services.IAnalyticsQueryService, IoBuilt.API.Analytics.Application.Internal.QueryServices.AnalyticsQueryService>();
 builder.Services.AddScoped<IoBuilt.API.Analytics.Interfaces.ACL.IDevicesContextFacade, IoBuilt.API.Analytics.Application.ACL.DevicesContextFacade>();
@@ -197,8 +202,6 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
-    // Recreate database to apply new Subscription structure with Plan relationship
-    context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
     
     // Seed Plans and Subscriptions at runtime (they have List<string> properties with conversions)

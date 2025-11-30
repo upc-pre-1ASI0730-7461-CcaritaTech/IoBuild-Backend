@@ -1,0 +1,159 @@
+using IoBuilt.API.Subscriptions.Domain.Model.Aggregates;
+using IoBuilt.API.Subscriptions.Domain.Repositories;
+using IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Configuration;
+using Microsoft.Extensions.Options;
+using Stripe;
+using Stripe.Checkout;
+
+namespace IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Services;
+
+/// <summary>
+/// Service for handling subscription payments through Stripe
+/// </summary>
+public class StripePaymentService
+{
+    private readonly ISubscriptionRepository _subscriptionRepository;
+    private readonly IPlanRepository _planRepository;
+    private readonly StripeSettings _stripeSettings;
+    private readonly string _frontendUrl;
+
+    public StripePaymentService(
+        ISubscriptionRepository subscriptionRepository,
+        IPlanRepository planRepository,
+        IOptions<StripeSettings> stripeSettings,
+        IConfiguration configuration)
+    {
+        _subscriptionRepository = subscriptionRepository;
+        _planRepository = planRepository;
+        _stripeSettings = stripeSettings.Value;
+        _frontendUrl = configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
+        
+        // Configure Stripe API Key
+        StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
+    }
+
+    /// <summary>
+    /// Creates a Stripe checkout session for a subscription plan
+    /// </summary>
+    public async Task<(string SessionId, string CheckoutUrl, long AmountInCents)> CreateCheckoutSessionAsync(
+        int builderId, 
+        int planId, 
+        string successUrl, 
+        string cancelUrl)
+    {
+        // Validate that the plan exists
+        var plan = await _planRepository.FindByIdAsync(planId);
+        if (plan == null)
+            throw new ArgumentException($"Plan with ID {planId} not found");
+
+        // Convert price to cents (Stripe uses smallest currency unit)
+        long amountInCents = (long)(plan.Price * 100);
+
+        // Clean success URL: remove any existing query parameters to ensure clean redirection
+        var baseSuccessUrl = successUrl.Split('?')[0];
+        var fullSuccessUrl = $"{baseSuccessUrl}?session_id={{CHECKOUT_SESSION_ID}}";
+        
+        // Clean cancel URL: remove any existing query parameters
+        var baseCancelUrl = cancelUrl.Split('?')[0];
+
+        // Create Stripe checkout session parameters
+        var options = new SessionCreateOptions
+        {
+            Mode = "payment",
+            SuccessUrl = fullSuccessUrl,
+            CancelUrl = baseCancelUrl,
+            LineItems = new List<SessionLineItemOptions>
+            {
+                new SessionLineItemOptions
+                {
+                    Quantity = 1,
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        Currency = "pen", // Peruvian Soles
+                        UnitAmount = amountInCents,
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = $"Plan {plan.Name}",
+                            Description = plan.Description
+                        }
+                    }
+                }
+            },
+            Metadata = new Dictionary<string, string>
+            {
+                { "builder_id", builderId.ToString() },
+                { "plan_id", planId.ToString() }
+            }
+        };
+
+        var service = new SessionService();
+        var session = await service.CreateAsync(options);
+
+        return (session.Id, session.Url, amountInCents);
+    }
+
+    /// <summary>
+    /// Confirms a payment and creates or updates the subscription
+    /// </summary>
+    public async Task<(string Status, int SubscriptionId, bool IsNewSubscription)> ConfirmPaymentAsync(
+        int builderId, 
+        string sessionId)
+    {
+        // Retrieve the Stripe session
+        var service = new SessionService();
+        var session = await service.GetAsync(sessionId);
+
+        // Validate payment status
+        if (session.PaymentStatus != "paid")
+        {
+            return ("pending", 0, false);
+        }
+
+        // Extract metadata
+        if (!session.Metadata.TryGetValue("plan_id", out var planIdStr) || 
+            !int.TryParse(planIdStr, out var planId))
+        {
+            throw new InvalidOperationException("Plan ID not found in session metadata");
+        }
+
+        // Check if builder already has an active subscription
+        var existingSubscription = await _subscriptionRepository.FindByBuilderIdAsync(builderId);
+        
+        bool isNewSubscription = false;
+        int subscriptionId;
+
+        if (existingSubscription != null)
+        {
+            // Update existing subscription
+            existingSubscription.Update(
+                planId: planId,
+                status: "active",
+                startDate: DateTime.UtcNow,
+                endDate: DateTime.UtcNow.AddMonths(1));
+            
+            _subscriptionRepository.Update(existingSubscription);
+            subscriptionId = existingSubscription.Id;
+        }
+        else
+        {
+            // Create new subscription
+            var newSubscription = new Domain.Model.Aggregates.Subscription(
+                builderId: builderId,
+                planId: planId,
+                status: "active",
+                startDate: DateTime.UtcNow,
+                endDate: DateTime.UtcNow.AddMonths(1));
+            
+            await _subscriptionRepository.AddAsync(newSubscription);
+            await _subscriptionRepository.SaveChangesAsync();
+            
+            subscriptionId = newSubscription.Id;
+            isNewSubscription = true;
+        }
+
+        await _subscriptionRepository.SaveChangesAsync();
+
+        return ("paid", subscriptionId, isNewSubscription);
+    }
+}
+
