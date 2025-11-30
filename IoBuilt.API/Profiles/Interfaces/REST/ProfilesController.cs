@@ -57,6 +57,20 @@ public class ProfilesController(
         return Ok(profileResources);
     }
 
+    [HttpPut("{profileId:int}")]
+    [SwaggerOperation("Update Profile", "Update an existing profile by its unique identifier.", OperationId = "UpdateProfile")]
+    [SwaggerResponse(200, "The profile was updated successfully.", typeof(ProfileResource))]
+    [SwaggerResponse(404, "The profile was not found.")]
+    [SwaggerResponse(400, "The profile could not be updated.")]
+    public async Task<IActionResult> UpdateProfile(int profileId, [FromBody] UpdateProfileResource resource)
+    {
+        var updateProfileCommand = UpdateProfileCommandFromResourceAssembler.ToCommandFromResource(resource, profileId);
+        var profile = await profileCommandService.Handle(updateProfileCommand);
+        if (profile is null) return BadRequest();
+        var profileResource = ProfileResourceFromEntityAssembler.ToResourceFromEntity(profile);
+        return Ok(profileResource);
+    }
+
     [HttpPost("second-email")]
     [SwaggerOperation("Set Profile Second Email", "Set or update the profile's secondary email by user id.", OperationId = "SetProfileSecondEmailByUserId")]
     [SwaggerResponse(204, "The secondary email was set successfully.")]
