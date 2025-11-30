@@ -26,7 +26,10 @@ public class StripePaymentService
         _subscriptionRepository = subscriptionRepository;
         _planRepository = planRepository;
         _stripeSettings = stripeSettings.Value;
-        _frontendUrl = configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
+        
+        // Expand environment variables in frontend URL
+        var frontendUrlTemplate = configuration["AppSettings:FrontendUrl"] ?? "http://localhost:5173";
+        _frontendUrl = Environment.ExpandEnvironmentVariables(frontendUrlTemplate);
         
         // Configure Stripe API Key
         StripeConfiguration.ApiKey = _stripeSettings.SecretKey;
