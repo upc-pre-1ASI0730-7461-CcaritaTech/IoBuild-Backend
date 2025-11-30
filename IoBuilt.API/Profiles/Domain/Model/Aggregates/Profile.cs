@@ -46,4 +46,15 @@ public partial class Profile
         SecondEmail = secondEmail;
         return this;
     }
+
+    public Profile UpdateInformation(string photoUrl, string name, string username, string address, int age, string phoneNumber)
+    {
+        PhotoUrl = photoUrl;
+        Name = name;
+        Username = username;
+        Address = address;
+        Age = age;
+        PhoneNumber = phoneNumber;
+        return this;
+    }
 }
