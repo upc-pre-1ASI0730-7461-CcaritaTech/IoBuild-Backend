@@ -2,10 +2,8 @@ namespace IoBuilt.API.Subscriptions.Domain.Model.Commands;
 
 public record UpdateSubscriptionCommand(
     int Id,
-    string? Plan,
+    int? PlanId,
     string? Status,
     DateTime? StartDate,
-    DateTime? EndDate,
-    decimal? Price,
-    IEnumerable<string>? Features);
+    DateTime? EndDate);
 
