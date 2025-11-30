@@ -18,12 +18,10 @@ public class SubscriptionCommandService : ISubscriptionCommandService
     {
         var entity = new Subscription(
             command.BuilderId,
-            command.Plan,
+            command.PlanId,
             command.Status,
             command.StartDate,
-            command.EndDate,
-            command.Price,
-            command.Features?.ToList());
+            command.EndDate);
         await _repository.AddAsync(entity);
         await _repository.SaveChangesAsync();
         return entity.Id;
@@ -33,7 +31,7 @@ public class SubscriptionCommandService : ISubscriptionCommandService
     {
         var entity = await _repository.FindByIdAsync(command.Id);
         if (entity is null) return;
-        entity.Update(command.Plan, command.Status, command.StartDate, command.EndDate, command.Price, command.Features);
+        entity.Update(command.PlanId, command.Status, command.StartDate, command.EndDate);
         _repository.Update(entity);
         await _repository.SaveChangesAsync();
     }
