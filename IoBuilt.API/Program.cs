@@ -162,6 +162,7 @@ builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandServi
 builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
 builder.Services.AddScoped<IPlanRepository, IoBuilt.API.Subscriptions.Infrastructure.Persistence.EFC.Repositories.PlanRepository>();
 builder.Services.AddScoped<IPlanQueryService, IoBuilt.API.Subscriptions.Application.Internal.QueryServices.PlanQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Subscriptions.Interfaces.ACL.ISubscriptionsContextFacade, IoBuilt.API.Subscriptions.Application.ACL.SubscriptionsContextFacade>();
 
 // Analytics Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Analytics.Domain.Services.IAnalyticsQueryService, IoBuilt.API.Analytics.Application.Internal.QueryServices.AnalyticsQueryService>();
@@ -196,6 +197,8 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
+    // Recreate database to apply new Subscription structure with Plan relationship
+    context.Database.EnsureDeleted();
     context.Database.EnsureCreated();
     
     // Seed Plans and Subscriptions at runtime (they have List<string> properties with conversions)
