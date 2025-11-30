@@ -18,5 +18,6 @@ public static class ModelBuilderExtensions
         builder.Entity<Profile>().Property(p => p.Address).HasMaxLength(500);
         builder.Entity<Profile>().Property(p => p.Age).IsRequired();
         builder.Entity<Profile>().Property(p => p.PhoneNumber).HasMaxLength(20);
+        builder.Entity<Profile>().Property(p => p.SecondEmail).HasMaxLength(100).IsRequired(false).HasColumnName("second_email");
     }
 }

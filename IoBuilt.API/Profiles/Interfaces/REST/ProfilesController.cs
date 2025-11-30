@@ -2,6 +2,7 @@ using System.Net.Mime;
 using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
 using IoBuilt.API.Profiles.Domain.Model.Queries;
 using IoBuilt.API.Profiles.Domain.Services;
+using IoBuilt.API.Profiles.Interfaces.ACL;
 using IoBuilt.API.Profiles.Interfaces.REST.Resources;
 using IoBuilt.API.Profiles.Interfaces.REST.Transform;
 using Microsoft.AspNetCore.Mvc;
@@ -16,7 +17,8 @@ namespace IoBuilt.API.Profiles.Interfaces.REST;
 [SwaggerTag("Available Profile Endpoints.")]
 public class ProfilesController(
     IProfileCommandService profileCommandService,
-    IProfileQueryService profileQueryService) : ControllerBase
+    IProfileQueryService profileQueryService,
+    IProfilesContextFacade profilesContextFacade) : ControllerBase
 {
     [HttpPost]
     [SwaggerOperation("Create Profile", "Create a new profile.", OperationId = "CreateProfile")]
@@ -53,5 +55,29 @@ public class ProfilesController(
         var profiles = await profileQueryService.Handle(getAllProfilesQuery);
         var profileResources = profiles.Select(ProfileResourceFromEntityAssembler.ToResourceFromEntity);
         return Ok(profileResources);
+    }
+
+    [HttpPut("{profileId:int}")]
+    [SwaggerOperation("Update Profile", "Update an existing profile by its unique identifier.", OperationId = "UpdateProfile")]
+    [SwaggerResponse(200, "The profile was updated successfully.", typeof(ProfileResource))]
+    [SwaggerResponse(404, "The profile was not found.")]
+    [SwaggerResponse(400, "The profile could not be updated.")]
+    public async Task<IActionResult> UpdateProfile(int profileId, [FromBody] UpdateProfileResource resource)
+    {
+        var updateProfileCommand = UpdateProfileCommandFromResourceAssembler.ToCommandFromResource(resource, profileId);
+        var profile = await profileCommandService.Handle(updateProfileCommand);
+        if (profile is null) return BadRequest();
+        var profileResource = ProfileResourceFromEntityAssembler.ToResourceFromEntity(profile);
+        return Ok(profileResource);
+    }
+
+    [HttpPost("second-email")]
+    [SwaggerOperation("Set Profile Second Email", "Set or update the profile's secondary email by user id.", OperationId = "SetProfileSecondEmailByUserId")]
+    [SwaggerResponse(204, "The secondary email was set successfully.")]
+    [SwaggerResponse(404, "The profile was not found.")]
+    public async Task<IActionResult> SetSecondEmail([FromQuery] int userId, [FromBody] SecondEmailResource resource)
+    {
+        await profilesContextFacade.SetSecondEmailByUserId(userId, resource.SecondEmail);
+        return NoContent();
     }
 }

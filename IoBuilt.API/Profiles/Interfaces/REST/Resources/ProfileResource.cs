@@ -8,4 +8,5 @@ public record ProfileResource(
     string Username, 
     string Address, 
     int Age, 
-    string PhoneNumber);
+    string PhoneNumber,
+    string? SecondEmail);

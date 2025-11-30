@@ -11,8 +11,24 @@ using IoBuilt.API.Devices.Application.Internal.QueryServices;
 using IoBuilt.API.Devices.Domain.Repositories;
 using IoBuilt.API.Devices.Domain.Services;
 using IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories;
+using IoBuilt.API.Subscriptions.Application.Internal.CommandServices;
+using IoBuilt.API.Subscriptions.Application.Internal.QueryServices;
+using IoBuilt.API.Subscriptions.Domain.Repositories;
+using IoBuilt.API.Subscriptions.Domain.Services;
+using IoBuilt.API.Subscriptions.Infrastructure.Persistence.EFC.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using DotNetEnv;
+
+// Load environment variables from .env file
+var envFile = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production" 
+    ? ".env.production" 
+    : ".env";
+
+if (File.Exists(envFile))
+{
+    Env.Load(envFile);
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +37,45 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 builder.Services.AddControllers(options => options.Conventions.Add(new KebabCaseRouteNamingConvention()));
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Configure Database Connection based on Environment
+if (builder.Environment.IsDevelopment())
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var connectionStringTemplate = builder.Configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrEmpty(connectionStringTemplate))
+            throw new Exception("Database connection string template is not set in the configuration.");
+        var connectionString = Environment.ExpandEnvironmentVariables(connectionStringTemplate);
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("Database connection string is not set in the configuration.");
+        options.UseMySQL(connectionString)
+            .LogTo(Console.WriteLine, LogLevel.Information)
+            .EnableSensitiveDataLogging()
+            .EnableDetailedErrors();
+    });
+else if (builder.Environment.IsProduction())
+    builder.Services.AddDbContext<AppDbContext>(options =>
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+            .AddEnvironmentVariables()
+            .Build();
+        var connectionStringTemplate = configuration.GetConnectionString("DefaultConnection");
+        if (string.IsNullOrEmpty(connectionStringTemplate))
+            throw new Exception("Database connection string template is not set in the configuration.");
+        var connectionString = Environment.ExpandEnvironmentVariables(connectionStringTemplate);
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("Database connection string is not set in the configuration.");
+        options.UseMySQL(connectionString)
+            .LogTo(Console.WriteLine, LogLevel.Error)
+            .EnableDetailedErrors();
+    });
 
 // Add CORS Policy (configurable)
 // Reads AllowedOrigins from configuration. In Development we allow any origin for convenience.
-var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+var allowedOriginsConfig = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+var allowedOrigins = allowedOriginsConfig != null && allowedOriginsConfig.Length > 0 && allowedOriginsConfig[0].Contains("%")
+    ? Environment.ExpandEnvironmentVariables(allowedOriginsConfig[0]).Split(',', StringSplitOptions.RemoveEmptyEntries)
+    : allowedOriginsConfig;
 
 builder.Services.AddCors(options =>
 {
@@ -52,19 +102,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-if (connectionString == null) throw new InvalidOperationException("Connection string not found.");
-
-builder.Services.AddDbContext<AppDbContext>(options =>
-{
-    if (builder.Environment.IsDevelopment())
-        options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Information)
-            .EnableSensitiveDataLogging()
-            .EnableDetailedErrors();
-    else if (builder.Environment.IsProduction())
-        options.UseMySQL(connectionString)
-            .LogTo(Console.WriteLine, LogLevel.Error);
-});
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -125,6 +162,11 @@ builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Repositories.IUnitReposit
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitCommandService, IoBuilt.API.Projects.Application.Internal.CommandServices.UnitCommandService>();
 builder.Services.AddScoped<IoBuilt.API.Projects.Domain.Services.IUnitQueryService, IoBuilt.API.Projects.Application.Internal.QueryServices.UnitQueryService>();
 
+// Clients Bounded Context
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Services.IClientCommandService, IoBuilt.API.Clients.Application.Internal.CommandServices.ClientCommandService>();
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Services.IClientQueryService, IoBuilt.API.Clients.Application.Internal.QueryServices.ClientQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Clients.Domain.Repositories.IClientRepository, IoBuilt.API.Clients.Infrastructure.Persistence.EFC.Repositories.ClientRepository>();
+
 // IAM Bounded Context
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Repositories.IUserRepository, IoBuilt.API.IAM.Infrastructure.Persistence.EFC.Repositories.UserRepository>();
 builder.Services.AddScoped<IoBuilt.API.IAM.Domain.Services.IUserQueryService, IoBuilt.API.IAM.Application.Internal.QueryServices.UserQueryService>();
@@ -151,6 +193,25 @@ builder.Services.AddScoped<IDeviceCommandService, DeviceCommandService>();
 builder.Services.AddScoped<IDeviceQueryService, DeviceQueryService>();
 builder.Services.AddScoped<IoBuilt.API.Devices.Domain.Repositories.IDeviceLogRepository, IoBuilt.API.Devices.Infrastructure.Persistence.EFC.Repositories.DeviceLogRepository>();
 
+// Subscriptions Bounded Context
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionCommandService, SubscriptionCommandService>();
+builder.Services.AddScoped<ISubscriptionQueryService, SubscriptionQueryService>();
+builder.Services.AddScoped<IPlanRepository, IoBuilt.API.Subscriptions.Infrastructure.Persistence.EFC.Repositories.PlanRepository>();
+builder.Services.AddScoped<IPlanQueryService, IoBuilt.API.Subscriptions.Application.Internal.QueryServices.PlanQueryService>();
+builder.Services.AddScoped<IoBuilt.API.Subscriptions.Interfaces.ACL.ISubscriptionsContextFacade, IoBuilt.API.Subscriptions.Application.ACL.SubscriptionsContextFacade>();
+
+// Stripe Payment Configuration
+builder.Services.Configure<IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Configuration.StripeSettings>(options =>
+{
+    var secretKeyTemplate = builder.Configuration["StripeSettings:SecretKey"] ?? string.Empty;
+    var publishableKeyTemplate = builder.Configuration["StripeSettings:PublishableKey"] ?? string.Empty;
+    
+    options.SecretKey = Environment.ExpandEnvironmentVariables(secretKeyTemplate);
+    options.PublishableKey = Environment.ExpandEnvironmentVariables(publishableKeyTemplate);
+});
+builder.Services.AddScoped<IoBuilt.API.Subscriptions.Infrastructure.Payment.Stripe.Services.StripePaymentService>();
+
 // Analytics Bounded Context
 builder.Services.AddScoped<IoBuilt.API.Analytics.Domain.Services.IAnalyticsQueryService, IoBuilt.API.Analytics.Application.Internal.QueryServices.AnalyticsQueryService>();
 builder.Services.AddScoped<IoBuilt.API.Analytics.Interfaces.ACL.IDevicesContextFacade, IoBuilt.API.Analytics.Application.ACL.DevicesContextFacade>();
@@ -159,7 +220,11 @@ builder.Services.AddScoped<IoBuilt.API.Analytics.Interfaces.ACL.IProjectsContext
 // IAM Bounded Context
 
 // TokenSettings Configuration
-builder.Services.Configure<IoBuilt.API.IAM.Infrastructure.Tokens.JWT.Configuration.TokenSettings>(builder.Configuration.GetSection("TokenSettings"));
+builder.Services.Configure<IoBuilt.API.IAM.Infrastructure.Tokens.JWT.Configuration.TokenSettings>(options =>
+{
+    var secretTemplate = builder.Configuration["TokenSettings:Secret"] ?? string.Empty;
+    options.Secret = Environment.ExpandEnvironmentVariables(secretTemplate);
+});
 // Dependency Injection for IAM Bounded Context
 
 
@@ -185,6 +250,9 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     var context = services.GetRequiredService<AppDbContext>();
     context.Database.EnsureCreated();
+    
+    // Seed Plans and Subscriptions at runtime (they have List<string> properties with conversions)
+    IoBuilt.API.Shared.Infrastructure.Persistence.EFC.Configuration.Extensions.DbContextSeedHelper.SeedPlansAndSubscriptions(context);
 }
 
 // Configure the HTTP request pipeline.

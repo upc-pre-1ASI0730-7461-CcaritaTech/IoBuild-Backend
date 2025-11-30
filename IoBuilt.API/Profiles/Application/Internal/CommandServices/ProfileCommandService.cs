@@ -50,4 +50,37 @@ public class ProfileCommandService(IProfileRepository profileRepository, IUnitOf
 
         return profile;
     }
+
+    /// <inheritdoc />
+    public async Task<Profile?> Handle(UpdateProfileCommand command)
+    {
+        // Check if the profile exists
+        var profile = await profileRepository.FindByIdAsync(command.Id);
+        if (profile == null)
+        {
+            throw new Exception($"Profile with Id {command.Id} not found.");
+        }
+
+        // Update the profile information
+        profile.UpdateInformation(
+            command.PhotoUrl,
+            command.Name,
+            command.Username,
+            command.Address,
+            command.Age,
+            command.PhoneNumber
+        );
+
+        try
+        {
+            profileRepository.Update(profile);
+            await unitOfWork.CompleteAsync();
+        }
+        catch (Exception e)
+        {
+            throw new Exception($"An error occurred while updating the profile: {e.Message}");
+        }
+
+        return profile;
+    }
 }
