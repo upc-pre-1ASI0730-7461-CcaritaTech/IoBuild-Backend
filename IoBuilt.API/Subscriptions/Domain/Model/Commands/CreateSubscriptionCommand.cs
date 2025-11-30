@@ -2,10 +2,8 @@ namespace IoBuilt.API.Subscriptions.Domain.Model.Commands;
 
 public record CreateSubscriptionCommand(
     int BuilderId,
-    string Plan,
+    int PlanId,
     string Status,
     DateTime? StartDate,
-    DateTime? EndDate,
-    decimal Price,
-    IEnumerable<string> Features
+    DateTime? EndDate
 );
