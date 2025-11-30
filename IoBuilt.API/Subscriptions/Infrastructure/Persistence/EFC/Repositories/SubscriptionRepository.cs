@@ -15,13 +15,13 @@ public class SubscriptionRepository : ISubscriptionRepository
     }
 
     public async Task<IEnumerable<Subscription>> ListAsync()
-        => await _context.Set<Subscription>().ToListAsync();
+        => await _context.Set<Subscription>().Include(s => s.Plan).ToListAsync();
 
     public async Task<Subscription?> FindByIdAsync(int id)
-        => await _context.Set<Subscription>().FindAsync(id);
+        => await _context.Set<Subscription>().Include(s => s.Plan).FirstOrDefaultAsync(s => s.Id == id);
 
     public async Task<Subscription?> FindByBuilderIdAsync(int builderId)
-        => await _context.Set<Subscription>().FirstOrDefaultAsync(s => s.BuilderId == builderId);
+        => await _context.Set<Subscription>().Include(s => s.Plan).FirstOrDefaultAsync(s => s.BuilderId == builderId);
 
     public async Task AddAsync(Subscription entity)
         => await _context.Set<Subscription>().AddAsync(entity);
