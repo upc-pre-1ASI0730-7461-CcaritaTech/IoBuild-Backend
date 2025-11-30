@@ -26,7 +26,6 @@ WORKDIR /app
 # Copy published files from build stage
 COPY --from=build /app/publish .
 
-# Configure port (Railway will override this with its own PORT variable)
 ENV PORT=8080
 ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT}
 EXPOSE ${PORT}
