@@ -7,12 +7,20 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace IoBuilt.API.Analytics.Interfaces.REST;
 
+/// <summary>
+/// REST API controller for analytics endpoints.
+/// Provides endpoints for retrieving dashboard metrics and historical data insights.
+/// </summary>
 [ApiController]
 [Route("api/v1/analytics")]
 public class AnalyticsController : ControllerBase
 {
     private readonly IAnalyticsQueryService _analyticsQueryService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AnalyticsController"/> class.
+    /// </summary>
+    /// <param name="analyticsQueryService">Service for handling analytics queries.</param>
     public AnalyticsController(IAnalyticsQueryService analyticsQueryService)
     {
         _analyticsQueryService = analyticsQueryService;

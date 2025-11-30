@@ -6,17 +6,35 @@ using IoBuilt.API.Analytics.Interfaces.ACL;
 
 namespace IoBuilt.API.Analytics.Application.Internal.QueryServices;
 
+/// <summary>
+/// Application service implementing analytics query handling.
+/// Orchestrates data retrieval from multiple bounded contexts via ACL facades
+/// to build comprehensive analytical insights and metrics.
+/// </summary>
 public class AnalyticsQueryService : IAnalyticsQueryService
 {
     private readonly IDevicesContextFacade _devicesContextFacade;
     private readonly IProjectsContextFacade _projectsContextFacade;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AnalyticsQueryService"/> class.
+    /// </summary>
+    /// <param name="devicesContextFacade">Facade for accessing Devices bounded context.</param>
+    /// <param name="projectsContextFacade">Facade for accessing Projects bounded context.</param>
     public AnalyticsQueryService(IDevicesContextFacade devicesContextFacade, IProjectsContextFacade projectsContextFacade)
     {
         _devicesContextFacade = devicesContextFacade;
         _projectsContextFacade = projectsContextFacade;
     }
 
+    /// <summary>
+    /// Handles builder dashboard query by aggregating metrics across all builder's projects.
+    /// Retrieves device counts, occupancy data, energy trends, and project overviews.
+    /// </summary>
+    /// <param name="query">Query containing the builder ID.</param>
+    /// <returns>
+    /// BuilderMetrics aggregate containing comprehensive analytics, or null if builder has no projects.
+    /// </returns>
     public async Task<BuilderMetrics?> Handle(GetBuilderDashboardQuery query)
     {
         var projectIds = await _projectsContextFacade.GetProjectIdsByBuilderIdAsync(query.BuilderId);
@@ -160,6 +178,14 @@ public class AnalyticsQueryService : IAnalyticsQueryService
         };
     }
 
+    /// <summary>
+    /// Handles owner dashboard query by aggregating metrics across all owner's units.
+    /// Retrieves device health, energy consumption, water usage, temperature data, and unit details.
+    /// </summary>
+    /// <param name="query">Query containing the owner ID.</param>
+    /// <returns>
+    /// OwnerMetrics aggregate containing comprehensive analytics, or null if owner has no units.
+    /// </returns>
     public async Task<OwnerMetrics?> Handle(GetOwnerDashboardQuery query)
     {
         var projectIds = await _projectsContextFacade.GetProjectIdsByOwnerIdAsync(query.OwnerId);
@@ -305,6 +331,11 @@ public class AnalyticsQueryService : IAnalyticsQueryService
         };
     }
 
+    /// <summary>
+    /// Handles historical data query for a specific metric type within a date range.
+    /// </summary>
+    /// <param name="query">Query containing project ID, data type, and date range.</param>
+    /// <returns>Collection of historical data points matching the query criteria.</returns>
     public async Task<IEnumerable<HistoricalDataPoint>> Handle(GetHistoricalDataQuery query)
     {
         var logs = await _devicesContextFacade.GetDeviceLogsByProjectIdAndDateRangeAsync(
