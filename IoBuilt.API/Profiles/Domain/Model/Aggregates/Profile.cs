@@ -17,6 +17,7 @@ public partial class Profile
     public string Address { get; private set; }
     public int Age { get; private set; }
     public string PhoneNumber { get; private set; }
+    public string? SecondEmail { get; private set; }
 
     public Profile()
     {
@@ -25,6 +26,7 @@ public partial class Profile
         Username = string.Empty;
         Address = string.Empty;
         PhoneNumber = string.Empty;
+        SecondEmail = null;
     }
     
     public Profile(int userId, string photoUrl, string name, string username, string address, int age, string phoneNumber)
@@ -36,5 +38,12 @@ public partial class Profile
         Address = address;
         Age = age;
         PhoneNumber = phoneNumber;
+        SecondEmail = null;
+    }
+
+    public Profile UpdateSecondEmail(string? secondEmail)
+    {
+        SecondEmail = secondEmail;
+        return this;
     }
 }

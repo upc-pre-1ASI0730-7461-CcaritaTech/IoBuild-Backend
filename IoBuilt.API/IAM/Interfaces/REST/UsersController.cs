@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using IoBuilt.API.IAM.Domain.Model.Commands;
 using IoBuilt.API.IAM.Domain.Model.Queries;
 using IoBuilt.API.IAM.Domain.Services;
 using IoBuilt.API.IAM.Infrastructure.Pipeline.Middleware.Attributes;
@@ -68,17 +67,6 @@ public class UsersController(
             return BadRequest("NewPassword and ConfirmNewPassword do not match.");
 
         var command = UpdatePasswordCommandFromResourceAssembler.ToCommandFromResource(userId, resource);
-        await userCommandService.Handle(command);
-        return NoContent();
-    }
-    
-    [HttpPost("{userId:int}/second-email")]
-    [SwaggerOperation("Set User Second Email", "Set or update the user's secondary email.", OperationId = "SetUserSecondEmail")]
-    [SwaggerResponse(204, "The secondary email was set successfully.")]
-    [SwaggerResponse(404, "The user was not found.")]
-    public async Task<IActionResult> SetSecondEmail(int userId, [FromBody] SecondEmailResource resource)
-    {
-        var command = new SecondEmailCommand(userId, resource.SecondEmail);
         await userCommandService.Handle(command);
         return NoContent();
     }

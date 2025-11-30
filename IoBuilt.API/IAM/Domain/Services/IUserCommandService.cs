@@ -31,11 +31,4 @@ public interface IUserCommandService
     /// <param name="command">The update password command</param>
     /// <returns>A task representing the asynchronous operation</returns>
     Task Handle(UpdatePasswordCommand command);
-    
-    /// <summary>
-    /// Handle set second email command
-    /// </summary>
-    /// <param name="command">The set second email command</param>
-    /// <returns>A task representing the asynchronous operation</returns>
-    Task Handle(SecondEmailCommand command);
 }

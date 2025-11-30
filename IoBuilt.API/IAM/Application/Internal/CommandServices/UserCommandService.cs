@@ -84,20 +84,4 @@ public class UserCommandService(
         userRepository.Update(user);
         await unitOfWork.CompleteAsync();
     }
-    
-    /// <summary>
-    /// Handle set second email command
-    /// </summary>
-    /// <param name="command">The set second email command</param>
-    /// <returns>A task representing the asynchronous operation</returns>
-    public async Task Handle(SecondEmailCommand command)
-    {
-        var user = await userRepository.FindByIdAsync(command.UserId);
-        if (user is null)
-            throw new Exception("User not found");
-
-        user.UpdateSecondEmail(command.SecondEmail);
-        userRepository.Update(user);
-        await unitOfWork.CompleteAsync();
-    }
 }
