@@ -22,8 +22,6 @@ public partial class User(string email, string passwordHash, string role)
     public string PasswordHash { get; private set; } = passwordHash;
     
     public string Role { get; private set; } = role;
-    
-    public string? SecondEmail { get; private set; }
 
     /// <summary>
     /// Update the email
@@ -55,17 +53,6 @@ public partial class User(string email, string passwordHash, string role)
     public User UpdateRole(string role)
     {
         Role = role;
-        return this;
-    }
-    
-    /// <summary>
-    /// Update the second email
-    /// </summary>
-    /// <param name="secondEmail">The new second email</param>
-    /// <returns>The updated user</returns>
-    public User UpdateSecondEmail(string? secondEmail)
-    {
-        SecondEmail = secondEmail;
         return this;
     }
 }

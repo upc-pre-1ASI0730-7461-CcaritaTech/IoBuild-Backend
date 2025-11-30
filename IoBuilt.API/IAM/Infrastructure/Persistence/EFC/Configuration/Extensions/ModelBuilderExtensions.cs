@@ -15,6 +15,5 @@ public static class ModelBuilderExtensions
         builder.Entity<User>().Property(u => u.Email).IsRequired().HasMaxLength(100);
         builder.Entity<User>().Property(u => u.PasswordHash).IsRequired().HasMaxLength(255);
         builder.Entity<User>().Property(u => u.Role).IsRequired().HasMaxLength(50);
-        builder.Entity<User>().Property(u => u.SecondEmail).HasMaxLength(100).IsRequired(false);
     }
 }
