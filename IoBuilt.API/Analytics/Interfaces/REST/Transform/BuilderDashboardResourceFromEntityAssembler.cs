@@ -3,8 +3,16 @@ using IoBuilt.API.Analytics.Interfaces.REST.Resources;
 
 namespace IoBuilt.API.Analytics.Interfaces.REST.Transform;
 
+/// <summary>
+/// Assembler for transforming BuilderMetrics domain aggregate to BuilderDashboardResource.
+/// </summary>
 public static class BuilderDashboardResourceFromEntityAssembler
 {
+    /// <summary>
+    /// Transforms a BuilderMetrics domain aggregate to BuilderDashboardResource.
+    /// </summary>
+    /// <param name="entity">The BuilderMetrics aggregate to transform.</param>
+    /// <returns>The transformed BuilderDashboardResource.</returns>
     public static BuilderDashboardResource ToResourceFromEntity(BuilderMetrics entity)
     {
         return new BuilderDashboardResource(
