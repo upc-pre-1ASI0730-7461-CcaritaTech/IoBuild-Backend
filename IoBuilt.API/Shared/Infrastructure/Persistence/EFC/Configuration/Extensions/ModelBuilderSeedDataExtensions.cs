@@ -4,6 +4,8 @@ using IoBuilt.API.Projects.Domain.Model.Aggregates;
 using IoBuilt.API.Projects.Domain.Model.ValueObjects;
 using IoBuilt.API.Devices.Domain.Model.Aggregates;
 using IoBuilt.API.Subscriptions.Domain.Model.Aggregates;
+using IoBuilt.API.Clients.Domain.Model.Aggregates;
+using IoBuilt.API.Clients.Domain.Model.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using BCryptNet = BCrypt.Net.BCrypt;
 
@@ -273,6 +275,169 @@ public static class ModelBuilderSeedDataExtensions
                 ProjectId = 2,
                 UnitNumber = "T2-0801",
                 OwnerId = 2
+            }
+        );
+
+        // ==================== SEED CLIENTS ====================
+        builder.Entity<Client>().HasData(
+            // Clients for Project 1 (Residencial Los Álamos)
+            new
+            {
+                Id = 1,
+                FullName = "Carlos Mendoza Ruiz",
+                ProjectId = 1,
+                ProjectName = "Residencial Los Álamos",
+                AccountStatement = EAccountStatement.Active,
+                Email = "carlos.mendoza@email.com",
+                PhoneNumber = "+51 998765432",
+                Address = "Av. Arequipa 1450, Lince, Lima"
+            },
+            new
+            {
+                Id = 2,
+                FullName = "Ana Lucía Torres",
+                ProjectId = 1,
+                ProjectName = "Residencial Los Álamos",
+                AccountStatement = EAccountStatement.Active,
+                Email = "ana.torres@email.com",
+                PhoneNumber = "+51 987654321",
+                Address = "Calle Los Olivos 234, San Isidro, Lima"
+            },
+            new
+            {
+                Id = 3,
+                FullName = "Roberto Vargas León",
+                ProjectId = 1,
+                ProjectName = "Residencial Los Álamos",
+                AccountStatement = EAccountStatement.Pending,
+                Email = "roberto.vargas@email.com",
+                PhoneNumber = "+51 976543210",
+                Address = "Jr. Monterrey 567, La Molina, Lima"
+            },
+            new
+            {
+                Id = 4,
+                FullName = "Patricia Salazar Gómez",
+                ProjectId = 1,
+                ProjectName = "Residencial Los Álamos",
+                AccountStatement = EAccountStatement.Active,
+                Email = "patricia.salazar@email.com",
+                PhoneNumber = "+51 965432109",
+                Address = "Av. Benavides 2890, Miraflores, Lima"
+            },
+            new
+            {
+                Id = 5,
+                FullName = "Luis Fernando Rojas",
+                ProjectId = 1,
+                ProjectName = "Residencial Los Álamos",
+                AccountStatement = EAccountStatement.Suspended,
+                Email = "luis.rojas@email.com",
+                PhoneNumber = "+51 954321098",
+                Address = "Calle San Martín 890, Barranco, Lima"
+            },
+            
+            // Clients for Project 2 (Torres del Pacífico)
+            new
+            {
+                Id = 6,
+                FullName = "Sandra Valverde Castro",
+                ProjectId = 2,
+                ProjectName = "Torres del Pacífico",
+                AccountStatement = EAccountStatement.Active,
+                Email = "sandra.valverde@email.com",
+                PhoneNumber = "+51 943210987",
+                Address = "Malecón Cisneros 1234, Miraflores, Lima"
+            },
+            new
+            {
+                Id = 7,
+                FullName = "Miguel Ángel Herrera",
+                ProjectId = 2,
+                ProjectName = "Torres del Pacífico",
+                AccountStatement = EAccountStatement.Active,
+                Email = "miguel.herrera@email.com",
+                PhoneNumber = "+51 932109876",
+                Address = "Av. Larco 789, Miraflores, Lima"
+            },
+            new
+            {
+                Id = 8,
+                FullName = "Gabriela Quispe Flores",
+                ProjectId = 2,
+                ProjectName = "Torres del Pacífico",
+                AccountStatement = EAccountStatement.Active,
+                Email = "gabriela.quispe@email.com",
+                PhoneNumber = "+51 921098765",
+                Address = "Calle Shell 456, Miraflores, Lima"
+            },
+            new
+            {
+                Id = 9,
+                FullName = "Fernando Díaz Pérez",
+                ProjectId = 2,
+                ProjectName = "Torres del Pacífico",
+                AccountStatement = EAccountStatement.Inactive,
+                Email = "fernando.diaz@email.com",
+                PhoneNumber = "+51 910987654",
+                Address = "Av. Angamos 2345, Surquillo, Lima"
+            },
+            
+            // Clients for Project 3 (Condominio Las Casuarinas)
+            new
+            {
+                Id = 10,
+                FullName = "María Elena Vega",
+                ProjectId = 3,
+                ProjectName = "Condominio Las Casuarinas",
+                AccountStatement = EAccountStatement.Pending,
+                Email = "maria.vega@email.com",
+                PhoneNumber = "+51 909876543",
+                Address = "Av. Javier Prado Este 4567, Surco, Lima"
+            },
+            new
+            {
+                Id = 11,
+                FullName = "Jorge Luis Campos",
+                ProjectId = 3,
+                ProjectName = "Condominio Las Casuarinas",
+                AccountStatement = EAccountStatement.Pending,
+                Email = "jorge.campos@email.com",
+                PhoneNumber = "+51 998876543",
+                Address = "Calle Las Camelias 345, San Isidro, Lima"
+            },
+            new
+            {
+                Id = 12,
+                FullName = "Roxana Gutiérrez Silva",
+                ProjectId = 3,
+                ProjectName = "Condominio Las Casuarinas",
+                AccountStatement = EAccountStatement.Active,
+                Email = "roxana.gutierrez@email.com",
+                PhoneNumber = "+51 987765432",
+                Address = "Av. Primavera 890, Surco, Lima"
+            },
+            new
+            {
+                Id = 13,
+                FullName = "Alberto Sánchez Torres",
+                ProjectId = 3,
+                ProjectName = "Condominio Las Casuarinas",
+                AccountStatement = EAccountStatement.Pending,
+                Email = "alberto.sanchez@email.com",
+                PhoneNumber = "+51 976654321",
+                Address = "Calle Los Eucaliptos 123, Surco, Lima"
+            },
+            new
+            {
+                Id = 14,
+                FullName = "Elena Ramírez Meza",
+                ProjectId = 3,
+                ProjectName = "Condominio Las Casuarinas",
+                AccountStatement = EAccountStatement.Active,
+                Email = "elena.ramirez@email.com",
+                PhoneNumber = "+51 965543210",
+                Address = "Av. Aviación 4321, San Borja, Lima"
             }
         );
 
