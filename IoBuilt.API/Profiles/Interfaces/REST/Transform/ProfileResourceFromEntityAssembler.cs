@@ -15,6 +15,7 @@ public static class ProfileResourceFromEntityAssembler
             entity.Username, 
             entity.Address, 
             entity.Age, 
-            entity.PhoneNumber);
+            entity.PhoneNumber,
+            entity.SecondEmail);
     }
 }
