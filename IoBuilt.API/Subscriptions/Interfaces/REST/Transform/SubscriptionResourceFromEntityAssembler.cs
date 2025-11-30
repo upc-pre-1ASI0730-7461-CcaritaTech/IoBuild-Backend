@@ -8,11 +8,9 @@ public static class SubscriptionResourceFromEntityAssembler
     public static SubscriptionResource ToResource(Subscription entity) => new(
         entity.Id,
         entity.BuilderId,
-        entity.Plan,
+        PlanResourceFromEntityAssembler.ToResource(entity.Plan),
         entity.Status,
         entity.StartDate,
-        entity.EndDate,
-        entity.Price,
-        entity.Features
+        entity.EndDate
     );
 }
