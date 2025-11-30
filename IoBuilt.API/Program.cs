@@ -55,16 +55,45 @@ if (builder.Environment.IsDevelopment())
 else if (builder.Environment.IsProduction())
     builder.Services.AddDbContext<AppDbContext>(options =>
     {
-        var configuration = new ConfigurationBuilder()
-            .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-            .AddEnvironmentVariables()
-            .Build();
-        var connectionStringTemplate = configuration.GetConnectionString("DefaultConnection");
-        if (string.IsNullOrEmpty(connectionStringTemplate))
-            throw new Exception("Database connection string template is not set in the configuration.");
-        var connectionString = Environment.ExpandEnvironmentVariables(connectionStringTemplate);
+        // First, try to use CONNECTION_STRING directly if available
+        var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+        
+        // If not available, build from individual environment variables or configuration
         if (string.IsNullOrEmpty(connectionString))
-            throw new Exception("Database connection string is not set in the configuration.");
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+            
+            var connectionStringTemplate = configuration.GetConnectionString("DefaultConnection");
+            
+            if (!string.IsNullOrEmpty(connectionStringTemplate))
+            {
+                connectionString = Environment.ExpandEnvironmentVariables(connectionStringTemplate);
+            }
+            else
+            {
+                // Build connection string from individual environment variables
+                var host = Environment.GetEnvironmentVariable("DB_HOST");
+                var port = Environment.GetEnvironmentVariable("DB_PORT");
+                var user = Environment.GetEnvironmentVariable("DB_USER");
+                var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+                var database = Environment.GetEnvironmentVariable("DB_NAME");
+                
+                if (!string.IsNullOrEmpty(host) && !string.IsNullOrEmpty(port) && 
+                    !string.IsNullOrEmpty(user) && !string.IsNullOrEmpty(database))
+                {
+                    connectionString = $"server={host};port={port};user={user};password={password};database={database}";
+                }
+            }
+        }
+        
+        if (string.IsNullOrEmpty(connectionString))
+            throw new Exception("Database connection string is not set. Please configure CONNECTION_STRING or individual DB_* environment variables.");
+        
+        Console.WriteLine($"Using connection string: server={connectionString.Split(';')[0].Split('=')[1]};port={connectionString.Split(';')[1].Split('=')[1]};database={connectionString.Split(';')[4].Split('=')[1]}");
+        
         options.UseMySQL(connectionString)
             .LogTo(Console.WriteLine, LogLevel.Error)
             .EnableDetailedErrors();
