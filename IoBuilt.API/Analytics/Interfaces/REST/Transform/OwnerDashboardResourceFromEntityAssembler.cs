@@ -3,8 +3,16 @@ using IoBuilt.API.Analytics.Interfaces.REST.Resources;
 
 namespace IoBuilt.API.Analytics.Interfaces.REST.Transform;
 
+/// <summary>
+/// Assembler for transforming OwnerMetrics domain aggregate to OwnerDashboardResource.
+/// </summary>
 public static class OwnerDashboardResourceFromEntityAssembler
 {
+    /// <summary>
+    /// Transforms an OwnerMetrics domain aggregate to OwnerDashboardResource.
+    /// </summary>
+    /// <param name="entity">The OwnerMetrics aggregate to transform.</param>
+    /// <returns>The transformed OwnerDashboardResource.</returns>
     public static OwnerDashboardResource ToResourceFromEntity(OwnerMetrics entity)
     {
         return new OwnerDashboardResource(
