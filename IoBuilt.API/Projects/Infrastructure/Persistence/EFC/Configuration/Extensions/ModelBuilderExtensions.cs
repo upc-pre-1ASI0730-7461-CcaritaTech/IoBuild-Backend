@@ -5,8 +5,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IoBuilt.API.Projects.Infrastructure.Persistence.EFC.Configuration.Extensions;
 
+/// <summary>
+/// Provides extension methods for configuring Entity Framework Core model building for the Projects bounded context.
+/// 
+/// This class contains fluent API configurations for Project and Unit entity mappings to the database schema,
+/// including property constraints, conversions, and relationships.
+/// </summary>
 public static class ModelBuilderExtensions
 {
+    /// <summary>
+    /// Applies Entity Framework Core configurations for the Projects bounded context entities.
+    /// 
+    /// Configures the mapping of Project and Unit entities to their database tables, including
+    /// primary keys, property constraints, column types, and enum conversions.
+    /// </summary>
+    /// <param name="builder">The ModelBuilder instance to apply configurations to.</param>
     public static void ApplyProjectsConfiguration(this ModelBuilder builder)
     {
         // Projects Context
