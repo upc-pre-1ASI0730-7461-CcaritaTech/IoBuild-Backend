@@ -9,6 +9,13 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace IoBuilt.API.Projects.Interfaces.REST;
 
+/// <summary>
+/// Provides REST API endpoints for managing units within projects.
+/// 
+/// This controller handles HTTP requests related to unit operations including
+/// retrieval and creation of units within projects.
+/// Requires authorization for all endpoints.
+/// </summary>
 [Authorize]
 [ApiController]
 [Route("api/v1/[controller]")]
@@ -16,6 +23,11 @@ namespace IoBuilt.API.Projects.Interfaces.REST;
 [SwaggerTag("Available Unit Endpoints.")]
 public class UnitsController(IUnitQueryService unitQueryService, IUnitCommandService unitCommandService) : ControllerBase
 {
+    /// <summary>
+    /// Retrieves all units in the system.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation. The task result contains
+    /// an IActionResult with a collection of unit resources.</returns>
     [HttpGet]
     [SwaggerOperation("Get All Units", "Get all units.", OperationId = "GetAllUnits")]
     [SwaggerResponse(200, "The units were found and returned.", typeof(IEnumerable<UnitResource>))]
@@ -27,6 +39,12 @@ public class UnitsController(IUnitQueryService unitQueryService, IUnitCommandSer
         return Ok(unitResources);
     }
     
+    /// <summary>
+    /// Retrieves a specific unit by its unique identifier.
+    /// </summary>
+    /// <param name="unitId">The unique identifier of the unit to retrieve.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains
+    /// an IActionResult with the unit resource if found, or a 404 Not Found response.</returns>
     [HttpGet("{unitId:int}")]
     [SwaggerOperation("Get Unit by Id", "Get a unit by its unique identifier.", OperationId = "GetUnitById")]
     [SwaggerResponse(200, "The unit was found and returned.", typeof(UnitResource))]
@@ -40,6 +58,12 @@ public class UnitsController(IUnitQueryService unitQueryService, IUnitCommandSer
         return Ok(unitResource);
     }
 
+    /// <summary>
+    /// Creates a new unit within a project.
+    /// </summary>
+    /// <param name="resource">The unit creation resource containing the unit details.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result contains
+    /// an IActionResult with the created unit resource and a 201 Created status, or a 400 Bad Request response.</returns>
     [HttpPost]
     [SwaggerOperation("Create Unit", "Creates a new unit.", OperationId = "CreateUnit")]
     [SwaggerResponse(201, "Unit created.", typeof(UnitResource))]
